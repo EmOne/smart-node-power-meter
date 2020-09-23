@@ -921,7 +921,7 @@ unsigned char CheckMasterBufferComplete(unsigned char SlaveNumber)
 #if MBFN_MASTER_REGISTERS_ENABLED > 0
 unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function, unsigned int StartAddress, unsigned int NumberOfRegisters, unsigned int TimeOut)
 {
-    unsigned char   i;
+    unsigned char   i,j;
     unsigned char   ReturnValue=FALSE;
 
     switch(MasterRead_State)
@@ -979,13 +979,25 @@ unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function
                 for (i = 0; i < MasterRead_Data.DataLen; ++i)
                     CRC16(MasterRead_Data.DataBuf[i], &MasterRead_CRC16);
 
-                if (((unsigned int) MasterRead_Data.DataBuf[MasterRead_Data.DataLen] + ((unsigned int) MasterRead_Data.DataBuf[MasterRead_Data.DataLen + 1] << 8)) == MasterRead_CRC16)
+                if (((unsigned int) MasterRead_Data.DataBuf[MasterRead_Data.DataLen] +
+                		((unsigned int) MasterRead_Data.DataBuf[MasterRead_Data.DataLen + 1] << 8))
+                		== MasterRead_CRC16)
                 {
                     // Valid message!
                     switch(MasterRead_Data.Function)
                     {
                         case MBFN_READ_HOLDING_REGISTERS:
                             HandleModbusMasterReadHoldingRegisters();
+                            for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS; ++i) {
+								if(MasterLookupTableInputs[i].LookupAddress == StartAddress) {
+									for (j = 0; j < MasterLookupTableInputs[i].Size; ++j) {
+										MasterLookupTableInputs[i].RegisterInput[j].ActValue =
+											MasterRegisterInputs[j].ActValue;
+									}
+
+									break;
+								}
+                            }
                             ReturnValue             = TRUE;
                             break;
                         default:
@@ -1000,7 +1012,7 @@ unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function
         case RXTX_TIMEOUT:
             MasterReadTimerValue        =0;
             MasterReceiveCounter        =0;
-            ReturnValue                 =FALSE;
+            ReturnValue                 =TRUE;
             MasterRead_State            =RXTX_IDLE;
             break;
 

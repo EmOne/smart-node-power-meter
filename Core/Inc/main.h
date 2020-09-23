@@ -37,12 +37,22 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+typedef enum eMode {POST, IDLE, SETTING, RUNNING, WAITING, ALARM, FAILSAFE} Mode;
 
+typedef enum eEvent {EV_NONE, EV_OUTPUT_ERR, EV_COMMU_ERR, EV_SENSOR_ERR} Event;
+
+typedef struct {
+	Mode output;
+	Mode commu;
+	Mode sensor;
+        Mode tracking;
+} evState_t;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+extern volatile Mode currentMode;
+extern int errno;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -102,8 +112,6 @@ void Error_Handler(void);
 #define EXT_TX_GPIO_Port GPIOC
 #define EXT_RX_Pin GPIO_PIN_7
 #define EXT_RX_GPIO_Port GPIOC
-#define EXT_CAN_RX_Pin GPIO_PIN_0
-#define EXT_CAN_RX_GPIO_Port GPIOD
 #define EXT_CAN_TX_Pin GPIO_PIN_1
 #define EXT_CAN_TX_GPIO_Port GPIOD
 #define LR_NRST_Pin GPIO_PIN_6
@@ -115,7 +123,29 @@ void Error_Handler(void);
 #define EXT_STATUS_Pin GPIO_PIN_9
 #define EXT_STATUS_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
+typedef struct user_data_t {
 
+	uint16_t temperature_adc_value;
+	uint16_t vref_adc_value;
+    uint16_t period;
+#ifdef  USE_ADC_SENSOR
+	uint16_t ac_current_value;
+	uint16_t ac_current_adc_value;
+#else
+	uint16_t io_value;
+#endif
+#ifdef USE_HDC1080
+	uint16_t amb_temperature_value;
+	uint16_t amb_humidity_value;
+#elif defined ( USE_ULTRASONIC_SENSOR )
+        void* us_sensor;
+#elif defined ( USE_AQI_SENSOR )
+        void* pm_sensor;
+        void* co2_sensor;
+        void* sl_sensor;
+#endif
+
+} user_data_t;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -96,5 +96,44 @@ RegStructure  RegisterOutputs       [NUMBER_OF_OUTPUT_REGISTERS]={
 
 #if MBFN_MASTER_REGISTERS_ENABLED > 0
 RegStructure  MasterRegisterInputs        [NUMBER_MASTER_INPUT_REGISTERS];
+LookupTable	  MasterLookupTableInputs     [NUMBER_MASTER_LOOKUP_INPUTS] = {
+		{.LookupAddress = 2999, .RegisterInput = {0}, .Size = 12 }, //Current:12
+		{.LookupAddress = 3011, .RegisterInput = {0}, .Size = 8 },	//Current Unbalanced
+		{.LookupAddress = 3019, .RegisterInput = {0}, .Size = 16 }, //Voltage
+		{.LookupAddress = 3053, .RegisterInput = {0}, .Size = 8 },	//Power
+		{.LookupAddress = 3077, .RegisterInput = {0}, .Size = 8 },  //Power factor
+		{.LookupAddress = 3760, .RegisterInput = {0}, .Size = 15 },	//Demand
+//		{.LookupAddress = 3008, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3010, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3012, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3014, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3016, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3018, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3020, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3022, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3024, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3026, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3028, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3030, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3032, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3036, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3054, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3056, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3058, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3060, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3078, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3080, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3082, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3084, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3761, .RegisterInput = {0}, .Size = 1 },
+//		{.LookupAddress = 3762, .RegisterInput = {0}, .Size = 1 },
+//		{.LookupAddress = 3763, .RegisterInput = {0}, .Size = 1 },
+//		{.LookupAddress = 3764, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3766, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3768, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3770, .RegisterInput = {0}, .Size = 2 },
+//		{.LookupAddress = 3772, .RegisterInput = {0}, .Size = 4 }
+};
+
 #endif
 /********************End of Input/Output Coils and Registers*******************/

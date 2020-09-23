@@ -3,6 +3,7 @@
  *  
  *  Ipucu   :
  *  RS485   :	Bu iletisim metodu kullanilirken RX pini pull up yapilmalidir.
+ *  Maintain by Anol P. <anol.p@emone.co.th> 2020
  */
 
 #ifndef __MODBUS__H
@@ -12,7 +13,9 @@
 #define NUMBER_OF_INPUTS                        0                               // Modbus RTU Slave Input Sayisi            :   Kullanilacak Input sayisi buradan girilmeli
 #define NUMBER_OF_OUTPUT_REGISTERS              36                             // Modbus RTU Slave Output Register Sayisi  :   Kullanilacak Register sayisi buradan girilmeli
 #define NUMBER_OF_INPUT_REGISTERS               0                               // Modbus RTU Slave Input Register Sayisi   :   Kullanilacak Input Register sayisi buradan girilmeli
-#define NUMBER_MASTER_INPUT_REGISTERS           0                               // Modbus RTU Master Input Register Sayisi  :   Kullanilacak Master Data Register sayisi buradan girilmeli
+#define NUMBER_MASTER_INPUT_REGISTERS           16                               // Modbus RTU Master Input Register Sayisi  :   Kullanilacak Master Data Register sayisi buradan girilmeli
+#define NUMBER_MASTER_LOOKUP_INPUTS           	6                               // Modbus RTU Master Lookup Input Register  :   Define look up table fot specific registers
+#define NUMBER_MASTER_LOOKUP_SLAVE           	3
 
 #define RECEIVE_BUFFER_SIZE                     250                             // Modbus RTU Slave icin kullanilacak buffer boyutu
 #define TRANSMIT_BUFFER_SIZE                    RECEIVE_BUFFER_SIZE
@@ -24,12 +27,12 @@ extern unsigned char SLAVE_ADDRESS;                                             
 
 #define MBFN_READ_COILS_ENABLED                 ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_READ_DISCRETE_INPUTS_ENABLED       ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
-#define MBFN_READ_HOLDING_REGISTERS_ENABLED     ( 1 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
+#define MBFN_READ_HOLDING_REGISTERS_ENABLED     ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_READ_INPUT_REGISTERS_ENABLED       ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_WRITE_SINGLE_COIL_ENABLED          ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
-#define MBFN_WRITE_SINGLE_REGISTER_ENABLED      ( 1 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
+#define MBFN_WRITE_SINGLE_REGISTER_ENABLED      ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_WRITE_MULTIPLE_COILS_ENABLED       ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
-#define MBFN_WRITE_MULTIPLE_REGISTERS_ENABLED   ( 1 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
+#define MBFN_WRITE_MULTIPLE_REGISTERS_ENABLED   ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_MASTER_REGISTERS_ENABLED           ( 1 )                           // Modbus RTU Master kullanilacaksa 1, kullanilmayacaksa 0
 
 typedef struct{
@@ -63,6 +66,15 @@ extern RegStructure  RegisterInputs             [NUMBER_OF_INPUT_REGISTERS];
 
 #if MBFN_MASTER_REGISTERS_ENABLED > 0
 extern RegStructure  MasterRegisterInputs       [NUMBER_MASTER_INPUT_REGISTERS];
+
+typedef struct
+{
+            const unsigned int  LookupAddress;
+            const unsigned int  Size;
+            RegStructure  		RegisterInput[NUMBER_MASTER_INPUT_REGISTERS];
+} LookupTable;
+
+extern LookupTable	  MasterLookupTableInputs[NUMBER_MASTER_LOOKUP_INPUTS];
 #endif
 
 extern unsigned int SlaveTimerValue;

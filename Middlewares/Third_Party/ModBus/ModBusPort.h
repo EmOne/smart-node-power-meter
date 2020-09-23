@@ -21,4 +21,11 @@ extern unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Len
 
 void MODBUS_SLAVE_RX_IRQHandler(void);
 void MODBUS_MASTER_RX_IRQHandler(void);
+
+void MODBUS_SLAVE_TX_IRQHandler(void);
+void MODBUS_MASTER_TX_IRQHandler(void);
+
+void MODBUS_SLAVE_TIMER_IRQHandler(void);
+void MODBUS_MASTER_TIMER_IRQHandler(void);
+
 #endif

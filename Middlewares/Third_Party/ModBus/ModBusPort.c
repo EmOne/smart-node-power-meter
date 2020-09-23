@@ -1,4 +1,5 @@
 #include "usart.h"
+//#include "tim.h"
 #include "ModBus.h"
 #include "ModBusPort.h"
 
@@ -12,10 +13,15 @@ unsigned char MasterReceiveCounter=0;
 UART_HandleTypeDef *huartModbusSlave;
 UART_HandleTypeDef *huartModbusMaster;
 
+TIM_HandleTypeDef *htimModbusSlave;
+TIM_HandleTypeDef *htimModbusMaster;
+
 void ModBusSlave_UART_Initialise(void)
 {
-//    General_USART_Init();
+
 //	if (huart != NULL) {
+	//    General_USART_Init();
+		huartModbusMaster = (UART_HandleTypeDef *) &huart3;
 		huartModbusSlave = (UART_HandleTypeDef *) &huart3;
 //	}
 }
@@ -25,6 +31,8 @@ void ModBusSlave_TIMER_Initialise(void)
     if(TimerInitFlag==0)
     {
         TimerInitFlag =1;
+//        htimModbusMaster = (TIM_HandleTypeDef *) &htim13;
+//        htimModbusSlave = (TIM_HandleTypeDef *) &htim13;
 //        General_Timer_Init();
     }
 }
@@ -58,7 +66,6 @@ void ModBusMaster_UART_Initialise(void)
 	    HAL_GPIO_WritePin(MB1_RE_GPIO_Port, MB1_RE_Pin, GPIO_PIN_RESET);
 
 		huartModbusMaster= (UART_HandleTypeDef *) &huart3;
-		HAL_UART_Receive_IT(huartModbusMaster, &MasterReceiveBuffer[MasterReceiveCounter], 1);
 
 //	}
 }
@@ -76,11 +83,14 @@ void ModBusMaster_UART_Putch(unsigned char c)
 {
     //U2TXREG=c;
         //while(U2STAbits.UTXBF);   // Gonderim tamamlandi mi
-	HAL_UART_Transmit(huartModbusMaster, &c, 1, 500);
+	HAL_UART_Transmit_DMA(huartModbusMaster, &c, 1);
 }
 
 unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length)
 {
+	HAL_StatusTypeDef ret = HAL_OK;
+	HAL_UART_StateTypeDef uRet;
+
 	HAL_GPIO_WritePin(MB1_RE_GPIO_Port, MB1_RE_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(MB1_DE_GPIO_Port, MB1_DE_Pin, GPIO_PIN_SET);
 
@@ -89,7 +99,19 @@ unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length)
 //        ModBusMaster_UART_Putch(*s++);
 //        Length--;
 //    }
-    HAL_UART_Transmit_IT(huartModbusMaster, s, Length);
+
+	ret = HAL_UART_Transmit_DMA(huartModbusMaster, s, Length);
+	if (ret == HAL_OK)
+    {
+		while(HAL_UART_STATE_BUSY_TX_RX == HAL_UART_GetState(huartModbusMaster));
+//		//TODO: Start timeout timer
+//		HAL_TIM_Base_Start(htimModbusMaster);
+    }
+    else
+    {
+
+    }
+
     return TRUE;
 }
 
@@ -108,6 +130,13 @@ void MODBUS_SLAVE_RX_IRQHandler(void)
 	}
 }
 
+void MODBUS_SLAVE_TX_IRQHandler(void)
+{
+	//TODO: Start timeout timer
+	HAL_TIM_Base_Start(htimModbusSlave);
+	HAL_UART_Receive_IT(huartModbusSlave, &ReceiveBuffer[ReceiveCounter], 1);
+}
+
 /**************************Interrupts For Master********************************/
 void MODBUS_MASTER_RX_IRQHandler(void)
 //void __attribute__((interrupt, , auto_psv)) _U2RXInterrupt( void )
@@ -121,7 +150,14 @@ void MODBUS_MASTER_RX_IRQHandler(void)
 
 		MasterReadTimerValue=0;
 		MasterWriteTimerValue=0;
-		HAL_UART_Receive_IT(huartModbusMaster, &MasterReceiveBuffer[MasterReceiveCounter], 1);
+		HAL_UART_Receive_DMA(huartModbusMaster, &MasterReceiveBuffer[MasterReceiveCounter], 1);
+}
+
+void MODBUS_MASTER_TX_IRQHandler(void)
+{
+	HAL_UART_Receive_DMA(huartModbusMaster, &MasterReceiveBuffer[MasterReceiveCounter], 1);
+	HAL_GPIO_WritePin(MB1_RE_GPIO_Port, MB1_RE_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(MB1_DE_GPIO_Port, MB1_DE_Pin, GPIO_PIN_RESET);
 }
 
 /******************************************************************************/
