@@ -60,7 +60,41 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/**
+ * @brief		Trace output for standard output
+ */
+//int fputc(int ch, FILE *f) {
+//  return ITM_SendChar(ch);
+//}
 
+//int _read(int file, char *ptr, int len) {
+//  int DataIdx;
+//
+//  for (DataIdx = 0; DataIdx < len; DataIdx++) {
+//    *(uint8_t *)ptr++ = __io_getchar();
+//  }
+//
+//  return len;
+//}
+
+int _write(int file, char *ptr, int len) {
+  int DataIdx;
+
+//  osSemaphoreWait(coreBinarySemHandle, 5000);
+
+  for (DataIdx = 0; DataIdx < len; DataIdx++) {
+//    __io_putchar(*ptr++);
+    //HAL_UART_Transmit(&huart2, (uint8_t *)ptr++, 1, 500);
+  }
+
+//  osSemaphoreRelease(coreBinarySemHandle);
+
+  return len;
+}
+
+//int __io_putchar(int ch) {
+//  return HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 500) == HAL_OK ? 0 : -1;
+//}
 /* USER CODE END 0 */
 
 /**
@@ -86,7 +120,9 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+//  HAL_DBGMCU_EnableDBGSleepMode();
+//  HAL_DBGMCU_EnableDBGStandbyMode();
+//  HAL_DBGMCU_EnableDBGStopMode();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -94,7 +130,7 @@ int main(void)
   MX_DMA_Init();
   MX_USART3_UART_Init();
   MX_USART2_UART_Init();
-  MX_USART6_UART_Init();
+  //MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -147,8 +183,8 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
   {
@@ -162,7 +198,7 @@ void SystemClock_Config(void)
 
 /**
   * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM9 interrupt took place, inside
+  * @note   This function is called  when TIM6 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
   * a global variable "uwTick" used as application time base.
   * @param  htim : TIM handle
@@ -173,7 +209,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 0 */
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM9) {
+  if (htim->Instance == TIM6) {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */

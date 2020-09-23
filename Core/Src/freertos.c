@@ -214,11 +214,11 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of modbusTask */
-  osThreadDef(modbusTask, StartModbusTask, osPriorityNormal, 0, 1024);
+  osThreadDef(modbusTask, StartModbusTask, osPriorityNormal, 0, 1280);
   modbusTaskHandle = osThreadCreate(osThread(modbusTask), NULL);
 
   /* definition and creation of loraTask */
-  osThreadDef(loraTask, StartLoRaTask, osPriorityNormal, 0, 1024);
+  osThreadDef(loraTask, StartLoRaTask, osPriorityNormal, 0, 2048);
   loraTaskHandle = osThreadCreate(osThread(loraTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */

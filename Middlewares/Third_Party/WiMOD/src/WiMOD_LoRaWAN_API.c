@@ -40,7 +40,7 @@
 //------------------------------------------------------------------------------
 //LoRa_App loraAppStatus;
 LoRa_App loraAppStatus = {
-    .devAddr.u32 = 0x00000FCF, //Device address (LSB)
+    .devAddr.u32 = 0x00001ABF, //Device address (LSB)
     .nwkSKey = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
         0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}, //Network key (MSB)
     .appSKey = {0xFF, 0xEE, 0xDD, 0xCC, 0xBB, 0xAA, 0x99, 0x88,
@@ -235,7 +235,7 @@ WiMOD_LoRaWAN_Init(
 #endif
 		)
 {
-	comPort = &huart6;
+	comPort = &huart2;
     // init HCI layer
     return WiMOD_HCI_Init(comPort,                  // comPort
                    WiMOD_LoRaWAN_Process_RxMessage, // receiver callback
