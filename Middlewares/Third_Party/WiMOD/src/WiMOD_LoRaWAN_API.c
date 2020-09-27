@@ -40,7 +40,7 @@
 //------------------------------------------------------------------------------
 //LoRa_App loraAppStatus;
 LoRa_App loraAppStatus = {
-    .devAddr.u32 = 0x00001ABF, //Device address (LSB)
+    .devAddr.u32 = 0x00000000, //Device address (LSB)
     .nwkSKey = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
         0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}, //Network key (MSB)
     .appSKey = {0xFF, 0xEE, 0xDD, 0xCC, 0xBB, 0xAA, 0x99, 0x88,
@@ -1916,7 +1916,7 @@ int SetRadioStack(void) {
 
 	UINT8 data[7];
 
-	data[0] = 0x5;	//Default Data Rate Index
+	data[0] = 0x4;	//Default Data Rate Index
 	data[1] = 0x10;	//Default TX Power Level (EIRP)
 	data[2] = 0b11000101;
 //	    Bit 0: 0 = Adaptive Data Rate disabled	    1 = Adaptive Data Rate enabled
@@ -2268,7 +2268,7 @@ int GetLinkADR(void) {
 //------------------------------------------------------------------------------
 int SetLinkADR(void) {
 	printf("SetLinkADR\n\r");
-	uint8_t payload = 0;
+	uint8_t payload = 1;
 //	LinkADRReq Option:
 //	0: LoRaWAN v1.0.2
 //	1: Semtech proposal

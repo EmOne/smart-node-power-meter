@@ -329,11 +329,11 @@ void StartLoRaTask(void const * argument)
 			memset(buf, 0x0, sizeof(buf));
 			WiMOD_LoRaWAN_Init();
 //			//      Reset();
-			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
-			osDelay(100);
-			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_RESET);
-			osDelay(100);
-			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
+//			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
+//			osDelay(100);
+//			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_RESET);
+//			osDelay(100);
+//			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
 //			osDelay(1000);
 //
 			while (Ping() == 0)
@@ -410,7 +410,7 @@ void StartLoRaTask(void const * argument)
 				}
 				SendUData(iSlaveId + 1, (uint8_t *) &buf,
 						(sizeof(int16_t) * MasterLookupTableInputs[i].Size) + 1);
-				osDelay(15000);
+				osDelay(30000);
 			}
 
 //			SendUData(MasterTx_Buf[0] + 1, (uint8_t *) &sData_t, sizeof(sData_t));
