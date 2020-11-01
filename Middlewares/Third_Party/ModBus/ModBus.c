@@ -866,6 +866,7 @@ void InitModbusMaster(void)
 
 unsigned char DoMasterTX(unsigned int Length)
 {  
+	memset(MasterReceiveBuffer, 0, sizeof(MasterReceiveBuffer));
     ModBusMaster_UART_String(MasterTx_Buf,Length);
 
     MasterTx_Buf_Size = 0;

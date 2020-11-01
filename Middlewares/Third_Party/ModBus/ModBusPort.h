@@ -18,7 +18,7 @@ extern void ModBusMaster_UART_Initialise(void);
 extern void ModBusMaster_TIMER_Initialise(void);
 extern void ModBusMaster_UART_Putch(unsigned char c);
 extern unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length);
-extern unsigned char ModBusChange_UART_Config(unsigned int BaudRate,unsigned int Parity,unsigned int StopBits);
+unsigned char ModBusChange_UART_Config(unsigned int BaudRate,unsigned int Parity,unsigned int StopBits);
 
 void MODBUS_SLAVE_RX_IRQHandler(void);
 void MODBUS_MASTER_RX_IRQHandler(void);

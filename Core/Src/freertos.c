@@ -221,12 +221,12 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of modbusTask */
-  osThreadDef(modbusTask, StartModbusTask, osPriorityNormal, 0, 1280);
+  osThreadDef(modbusTask, StartModbusTask, osPriorityNormal, 0, 1280*2);
   modbusTaskHandle = osThreadCreate(osThread(modbusTask), NULL);
 
   /* definition and creation of loraTask */
-  osThreadDef(loraTask, StartLoRaTask, osPriorityNormal, 0, 2048);
-  loraTaskHandle = osThreadCreate(osThread(loraTask), NULL);
+//  osThreadDef(loraTask, StartLoRaTask, osPriorityNormal, 0, 2048);
+//  loraTaskHandle = osThreadCreate(osThread(loraTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -293,42 +293,59 @@ void StartModbusTask(void const * argument)
 				if(iSlaveId==1)
 				{
 
-					Setup_BaudRate = 19200 ;
-					Setup_Parity = UART_PARITY_NONE ;
-					Setup_Stopbit = UART_STOPBITS_2;
-					ModBusChange_UART_Config(Setup_BaudRate,Setup_Parity,Setup_Stopbit);
+//					Setup_BaudRate =  ;
+//					Setup_Parity =  ;
+//					Setup_Stopbit = ;
+					UART_Config(19200,UART_PARITY_NONE,UART_STOPBITS_2);
+//					ModBusChange_UART_Config(Setup_BaudRate,Setup_Parity,Setup_Stopbit);
 
+//					huart3.Instance = USART3;
+//					  //huart3.Init.BaudRate = BuadRate;
+//					  huart3.Init.BaudRate = 19200;
+//					  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+//					  huart3.Init.StopBits = UART_STOPBITS_2;
+//					  huart3.Init.Parity = UART_PARITY_NONE;
+//					  huart3.Init.Mode = UART_MODE_TX_RX;
+//					  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+//					  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+//					  if (HAL_UART_Init(&huart3) != HAL_OK)
+//					  {
+//					    Error_Handler();
+//					  }
 
-				for (i = 0; i < NUMBER_SCHNEIDER_LOOKUP_INPUTS; ++i) {
-					while (ModBusMasterRead(iSlaveId, 3,
-							SchneiderLookupTableInputs[i].LookupAddress,
-							SchneiderLookupTableInputs[i].Size, 3500) != TRUE) {
-						osDelay(10);
-						MasterReadTimerValue += 10;
-					}
-					osDelay(500);
+					for (i = 0; i < NUMBER_SCHNEIDER_LOOKUP_INPUTS; ++i) {
+						while (ModBusMasterRead(iSlaveId, 3,
+								SchneiderLookupTableInputs[i].LookupAddress,
+								SchneiderLookupTableInputs[i].Size, 3500) != TRUE) {
+							osDelay(10);
+							MasterReadTimerValue += 10;
+						}
+						osDelay(100);
 					}
 				}
-
 				else if(iSlaveId==2)
 				{
 //					int *Reset_i=&i;
 //					*Reset_i=0;
 					Setup_BaudRate = 1200 ;
-					Setup_Parity = UART_PARITY_EVEN ;
+					Setup_Parity = UART_PARITY_EVEN;
 					Setup_Stopbit = UART_STOPBITS_1;
 					ModBusChange_UART_Config(Setup_BaudRate,Setup_Parity,Setup_Stopbit);
+					//UART_Config(1200,UART_PARITY_EVEN,UART_STOPBITS_1);
+//					ModBusChange_UART_Config(1200,UART_PARITY_EVEN,UART_STOPBITS_1);
+					uint8_t a[] = {0x02, 0x03, 0, 0x66, 0, 0x1,0x6F, 0xBC};
+					ModBusMaster_UART_String(a,8);
 
-				for (i = 0; i < NUMBER_MITSU_LOOKUP_INPUTS; ++i) {
-//					uint8_t a[] = {0x02, 0x03, 0, 0x66, 0, 0x1,0x6F, 0xBC};
-//					ModBusMaster_UART_String(a,8);
-					while (ModBusMasterRead(iSlaveId, 3,
-							MitsuLookupTableInputs[i].LookupAddress,
-							MitsuLookupTableInputs[i].Size, 3500) != TRUE) {
-							osDelay(10);
-							MasterReadTimerValue += 10;
-					}
-					osDelay(500);
+					for (i = 0; i < NUMBER_MITSU_LOOKUP_INPUTS; ++i) {
+
+
+//						while (ModBusMasterRead(iSlaveId, 3,
+//								MitsuLookupTableInputs[i].LookupAddress,
+//								MitsuLookupTableInputs[i].Size, 3500) != TRUE) {
+//								osDelay(10);
+//								MasterReadTimerValue += 10;
+//						}
+//						osDelay(500);
 					}
 				}
 

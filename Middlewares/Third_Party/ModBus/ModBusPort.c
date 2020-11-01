@@ -85,7 +85,7 @@ void ModBusMaster_UART_Putch(unsigned char c)
 {
     //U2TXREG=c;
         //while(U2STAbits.UTXBF);   // Gonderim tamamlandi mi
-	HAL_UART_Transmit_DMA(huartModbusMaster, &c, 1);
+	HAL_UART_Transmit(huartModbusMaster, &c, 1, 500);
 }
 
 unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length)
@@ -102,7 +102,7 @@ unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length)
 //        Length--;
 //    }
 
-	ret = HAL_UART_Transmit_DMA(huartModbusMaster, s, Length);
+	ret = HAL_UART_Transmit(huartModbusMaster, s, Length, 500);
 	if (ret == HAL_OK)
     {
 		while(HAL_UART_STATE_BUSY_TX_RX == HAL_UART_GetState(huartModbusMaster));
@@ -113,7 +113,7 @@ unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length)
     {
 
     }
-
+	MODBUS_MASTER_TX_IRQHandler();
     return TRUE;
 }
 
@@ -121,13 +121,16 @@ unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length)
 /***************************Modbus for change BuadRate**************************/
 unsigned char ModBusChange_UART_Config(unsigned int BaudRate,unsigned int Parity,unsigned int StopBits)
 {
+//	HAL_UART_DeInit(huartModbusMaster);
+
 	huartModbusMaster->Init.BaudRate=BaudRate;
 	huartModbusMaster->Init.Parity=Parity;
-	huartModbusMaster->Init.Parity=StopBits;
+	huartModbusMaster->Init.WordLength = UART_WORDLENGTH_9B;
+	huartModbusMaster->Init.StopBits=StopBits;
 	huartModbusMaster->Init.Mode = UART_MODE_TX_RX;
 	huartModbusMaster->Init.HwFlowCtl = UART_HWCONTROL_NONE;
 	huartModbusMaster->Init.OverSampling = UART_OVERSAMPLING_16;
-	HAL_UART_DeInit(huartModbusMaster);
+
 	if (HAL_UART_Init(huartModbusMaster) != HAL_OK)
 	  {
 	    Error_Handler();
@@ -170,14 +173,14 @@ void MODBUS_MASTER_RX_IRQHandler(void)
 
 		MasterReadTimerValue=0;
 		MasterWriteTimerValue=0;
-		HAL_UART_Receive_DMA(huartModbusMaster, &MasterReceiveBuffer[MasterReceiveCounter], 1);
+		HAL_UART_Receive_IT(huartModbusMaster, &MasterReceiveBuffer[MasterReceiveCounter], 1);
 }
 
 void MODBUS_MASTER_TX_IRQHandler(void)
 {
-	HAL_UART_Receive_DMA(huartModbusMaster, &MasterReceiveBuffer[MasterReceiveCounter], 1);
 	HAL_GPIO_WritePin(MB1_RE_GPIO_Port, MB1_RE_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(MB1_DE_GPIO_Port, MB1_DE_Pin, GPIO_PIN_RESET);
+	HAL_UART_Receive_IT(huartModbusMaster, &MasterReceiveBuffer[MasterReceiveCounter], 1);
 }
 
 /******************************************************************************/
