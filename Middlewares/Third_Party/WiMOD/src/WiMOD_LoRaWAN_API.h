@@ -227,14 +227,16 @@ typedef struct
 //  Function Prototypes
 //
 //------------------------------------------------------------------------------
-
+typedef int (*DataRxIndicated) (uint8_t fport, uint8_t* data, size_t len);
 // init
 bool
 WiMOD_LoRaWAN_Init(
 #ifdef Q_OS_WIN
 		const char*              comPort        // comPort
 #else
-		void
+//		void
+		UART_HandleTypeDef * comPort,
+	     DataRxIndicated fnDataRx
 #endif
 		);
 

@@ -842,6 +842,7 @@ void InitModbusSlave(unsigned char SlaveAddress)
     SLAVE_ADDRESS   =SlaveAddress;
     ModBusSlave_UART_Initialise();
     ModBusSlave_TIMER_Initialise();
+
 }
 
 /******************************************************************************/
@@ -988,14 +989,30 @@ unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function
                     {
                         case MBFN_READ_HOLDING_REGISTERS:
                             HandleModbusMasterReadHoldingRegisters();
-                            for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS; ++i) {
-								if(MasterLookupTableInputs[i].LookupAddress == StartAddress) {
-									for (j = 0; j < MasterLookupTableInputs[i].Size; ++j) {
-										MasterLookupTableInputs[i].RegisterInput[j].ActValue =
-											MasterRegisterInputs[j].ActValue;
-									}
+                            if( SlaveNumber==1)
+                            {
+								for (i = 0; i < NUMBER_SCHNEIDER_LOOKUP_INPUTS; ++i) {
+									if(SchneiderLookupTableInputs[i].LookupAddress == StartAddress) {
+										for (j = 0; j < SchneiderLookupTableInputs[i].Size; ++j) {
+											SchneiderLookupTableInputs[i].RegisterInput[j].ActValue =
+												MasterRegisterInputs[j].ActValue;
+										}
 
-									break;
+										break;
+									}
+								}
+                            }
+                            else if( SlaveNumber==2)
+                            {
+								for (i = 0; i < NUMBER_MITSU_LOOKUP_INPUTS; ++i) {
+									if(MitsuLookupTableInputs[i].LookupAddress == StartAddress) {
+										for (j = 0; j < MitsuLookupTableInputs[i].Size; ++j) {
+											MitsuLookupTableInputs[i].RegisterInput[j].ActValue =
+												MasterRegisterInputs[j].ActValue;
+										}
+
+										break;
+									}
 								}
                             }
                             ReturnValue             = TRUE;

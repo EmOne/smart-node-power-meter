@@ -13,6 +13,7 @@ unsigned char MasterReceiveCounter=0;
 UART_HandleTypeDef *huartModbusSlave;
 UART_HandleTypeDef *huartModbusMaster;
 
+
 TIM_HandleTypeDef *htimModbusSlave;
 TIM_HandleTypeDef *htimModbusMaster;
 
@@ -25,6 +26,7 @@ void ModBusSlave_UART_Initialise(void)
 		huartModbusSlave = (UART_HandleTypeDef *) &huart3;
 //	}
 }
+
 
 void ModBusSlave_TIMER_Initialise(void)
 {
@@ -113,6 +115,24 @@ unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length)
     }
 
     return TRUE;
+}
+
+
+/***************************Modbus for change BuadRate**************************/
+unsigned char ModBusChange_UART_Config(unsigned int BaudRate,unsigned int Parity,unsigned int StopBits)
+{
+	huartModbusMaster->Init.BaudRate=BaudRate;
+	huartModbusMaster->Init.Parity=Parity;
+	huartModbusMaster->Init.Parity=StopBits;
+	huartModbusMaster->Init.Mode = UART_MODE_TX_RX;
+	huartModbusMaster->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huartModbusMaster->Init.OverSampling = UART_OVERSAMPLING_16;
+	HAL_UART_DeInit(huartModbusMaster);
+	if (HAL_UART_Init(huartModbusMaster) != HAL_OK)
+	  {
+	    Error_Handler();
+	  }
+	return 0 ;
 }
 
 /***************************Interrupt For Slave********************************/

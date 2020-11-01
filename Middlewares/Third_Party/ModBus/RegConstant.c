@@ -95,14 +95,20 @@ RegStructure  RegisterOutputs       [NUMBER_OF_OUTPUT_REGISTERS]={
 
 
 #if MBFN_MASTER_REGISTERS_ENABLED > 0
-RegStructure  MasterRegisterInputs        [NUMBER_MASTER_INPUT_REGISTERS];
-LookupTable	  MasterLookupTableInputs     [NUMBER_MASTER_LOOKUP_INPUTS] = {
+
+
+	RegStructure  MasterRegisterInputs        [NUMBER_MASTER_INPUT_REGISTERS];
+
+LookupTable	  SchneiderLookupTableInputs[NUMBER_SCHNEIDER_LOOKUP_INPUTS] = {
 		{.LookupAddress = 2999, .RegisterInput = {0}, .Size = 12 }, //Current:12
 		{.LookupAddress = 3011, .RegisterInput = {0}, .Size = 8 },	//Current Unbalanced
 		{.LookupAddress = 3019, .RegisterInput = {0}, .Size = 16 }, //Voltage
 		{.LookupAddress = 3053, .RegisterInput = {0}, .Size = 8 },	//Power
 		{.LookupAddress = 3077, .RegisterInput = {0}, .Size = 8 },  //Power factor
 		{.LookupAddress = 3760, .RegisterInput = {0}, .Size = 15 },	//Demand
+		{.LookupAddress = 21321, .RegisterInput = {0}, .Size = 8 }, //Harmonic
+		{.LookupAddress = 3109, .RegisterInput = {0}, .Size = 8 }, //Hz
+		{.LookupAddress = 2699, .RegisterInput = {0}, .Size = 8 }, // Energy
 //		{.LookupAddress = 3008, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3010, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3012, .RegisterInput = {0}, .Size = 2 },
@@ -133,7 +139,22 @@ LookupTable	  MasterLookupTableInputs     [NUMBER_MASTER_LOOKUP_INPUTS] = {
 //		{.LookupAddress = 3768, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3770, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3772, .RegisterInput = {0}, .Size = 4 }
-};
+																};
+
+
+
+  LookupTable	 MitsuLookupTableInputs     [NUMBER_MITSU_LOOKUP_INPUTS] = {
+  		{.LookupAddress = 0, .RegisterInput = {0}, .Size = 1 }, //Slave Address
+  		{.LookupAddress = 102, .RegisterInput = {0}, .Size = 1 },	//Line voltage
+  		{.LookupAddress = 105, .RegisterInput = {0}, .Size = 1 },	//Frequency
+  		{.LookupAddress = 112, .RegisterInput = {0}, .Size = 1 }, //Line Current (RMS)
+  		{.LookupAddress = 115, .RegisterInput = {0}, .Size = 1 },	//Active Power (W)
+  		{.LookupAddress = 110, .RegisterInput = {0}, .Size = 2 },  //Active Energy
+		{.LookupAddress = 100, .RegisterInput = {0}, .Size = 2 },   //Serial No.
+  		{.LookupAddress = 113, .RegisterInput = {0}, .Size = 1 },	//Current Rating
+  																};
+
+
 
 #endif
 /********************End of Input/Output Coils and Registers*******************/

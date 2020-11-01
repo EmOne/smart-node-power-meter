@@ -23,6 +23,7 @@
 /* USER CODE BEGIN 0 */
 #include "ModBusPort.h"
 #include "WiMOD_LoRaWAN_API.h"
+//int BuadRate=0;
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart2;
@@ -56,6 +57,7 @@ void MX_USART3_UART_Init(void)
 {
 
   huart3.Instance = USART3;
+  //huart3.Init.BaudRate = BuadRate;
   huart3.Init.BaudRate = 19200;
   huart3.Init.WordLength = UART_WORDLENGTH_8B;
   huart3.Init.StopBits = UART_STOPBITS_2;
@@ -290,7 +292,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance==USART2)
 	{
-		WiMOD_LoRaWAN_Process();
+//		WiMOD_LoRaWAN_Process();
 	}
 	else if(huart->Instance==USART3)
 	{

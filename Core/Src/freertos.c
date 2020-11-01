@@ -24,18 +24,21 @@
 #include "main.h"
 #include "cmsis_os.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
 #include "ModBus.h"
 #include "ModBusPort.h"
 #include "WiMOD_LoRaWAN_API.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 evState_t ev;
 user_data_t sData_t;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -51,8 +54,12 @@ user_data_t sData_t;
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 int iSlaveId;
+
 bool bReadyToSend = false;
 uint32_t iCounter = 0;
+uint32_t Setup_BaudRate;
+uint32_t Setup_Parity;
+uint32_t Setup_Stopbit;
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId modbusTaskHandle;
@@ -266,32 +273,68 @@ void StartModbusTask(void const * argument)
 		switch (ev.sensor) {
 		case POST:
 			InitModbusMaster();
+			//MX_USART3_UART_Init()	;
 			osTimerStart(modbusTimerHandle, 1000);
 			ev.sensor = IDLE;
 			break;
 		case IDLE:
-			while(bReadyToSend == false)
-				osDelay(1000);
+//		while(bReadyToSend == false)
+//				osDelay(1000);
 			ev.sensor = RUNNING;
 			break;
 		case SETTING:
 			break;
 		case RUNNING:
-			for (j = 0; j < NUMBER_MASTER_LOOKUP_SLAVE; ++j)
+			for (j =0 ; j < NUMBER_MASTER_LOOKUP_SLAVE; ++j)
 			{
 				iSlaveId = j+1;
-				for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS; ++i) {
+
+
+				if(iSlaveId==1)
+				{
+
+					Setup_BaudRate = 19200 ;
+					Setup_Parity = UART_PARITY_NONE ;
+					Setup_Stopbit = UART_STOPBITS_2;
+					ModBusChange_UART_Config(Setup_BaudRate,Setup_Parity,Setup_Stopbit);
+
+
+				for (i = 0; i < NUMBER_SCHNEIDER_LOOKUP_INPUTS; ++i) {
 					while (ModBusMasterRead(iSlaveId, 3,
-							MasterLookupTableInputs[i].LookupAddress,
-							MasterLookupTableInputs[i].Size, 3500) != TRUE) {
+							SchneiderLookupTableInputs[i].LookupAddress,
+							SchneiderLookupTableInputs[i].Size, 3500) != TRUE) {
 						osDelay(10);
 						MasterReadTimerValue += 10;
 					}
 					osDelay(500);
+					}
 				}
-				ev.commu = RUNNING;
-				while(ev.commu != IDLE);
-				osDelay(5000);
+
+				else if(iSlaveId==2)
+				{
+//					int *Reset_i=&i;
+//					*Reset_i=0;
+					Setup_BaudRate = 1200 ;
+					Setup_Parity = UART_PARITY_EVEN ;
+					Setup_Stopbit = UART_STOPBITS_1;
+					ModBusChange_UART_Config(Setup_BaudRate,Setup_Parity,Setup_Stopbit);
+
+				for (i = 0; i < NUMBER_MITSU_LOOKUP_INPUTS; ++i) {
+//					uint8_t a[] = {0x02, 0x03, 0, 0x66, 0, 0x1,0x6F, 0xBC};
+//					ModBusMaster_UART_String(a,8);
+					while (ModBusMasterRead(iSlaveId, 3,
+							MitsuLookupTableInputs[i].LookupAddress,
+							MitsuLookupTableInputs[i].Size, 3500) != TRUE) {
+							osDelay(10);
+							MasterReadTimerValue += 10;
+					}
+					osDelay(500);
+					}
+				}
+
+//				ev.commu = RUNNING;
+//				while(ev.commu != IDLE);
+//				osDelay(5000);
 			}
 			ev.sensor = IDLE;
 			break;
@@ -307,6 +350,7 @@ void StartModbusTask(void const * argument)
   /* USER CODE END StartModbusTask */
 }
 
+
 /* USER CODE BEGIN Header_StartLoRaTask */
 /**
 * @brief Function implementing the loraTask thread.
@@ -317,49 +361,66 @@ void StartModbusTask(void const * argument)
 void StartLoRaTask(void const * argument)
 {
   /* USER CODE BEGIN StartLoRaTask */
+//	osEvent _event;
 	ev.commu = POST;
 	//  uint8_t mac_cmd[] = {0x01, 0x02};
 	uint8_t i, j, buf[40] = {};
-	//  struct user_data_t *st;
+//	struct user_data_t *st;
 //  osTimerStart(telemetryTimerHandle, 15000);
 	/* Infinite loop */
+
+
+	  /* Infinite loop */
 	for (;;) {
 		switch (ev.commu) {
 		case POST:
 			memset(buf, 0x0, sizeof(buf));
-			WiMOD_LoRaWAN_Init();
-//			//      Reset();
-//			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
-//			osDelay(100);
-//			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_RESET);
-//			osDelay(100);
-//			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
-//			osDelay(1000);
-//
+			 MX_USART6_UART_Init();
+			 WiMOD_LoRaWAN_Init(&huart6, loraDataRx);
+			//WiMOD_LoRaWAN_Init();
 			while (Ping() == 0)
 				osDelay(1000);
+//			//      Reset();
+			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
+			osDelay(100);
+			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_RESET);
+			osDelay(100);
+			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
+			osDelay(1000);
+//
+//			while (Ping() == 0)
+//				osDelay(1000);
 //			//      FactoryReset();
 //			//      osDelay(10000);
 //			//        LORA_state = LORA_RUNNING;
 //
 			ev.commu = SETTING;
+			//ev.commu=IDLE;
+
 			break;
 		case IDLE:
-			osDelay(1000);
+//			osDelay(1000);
 //			//      osThreadSuspend(&commuTaskHandle);
-//			//      WiMOD_LoRaWAN_SetMAC_CMD(&mac_cmd, sizeof(mac_cmd));
+//			      WiMOD_LoRaWAN_SetMAC_CMD(&mac_cmd, sizeof(mac_cmd));
 			if (GetNwkStatus() != 1) {
-				//        LORA_state = LORA_IDLE;
-				ev.commu = FAILSAFE;
-				//      else
-				//        LORA_state = LORA_ERROR;
-			} else {
-				osDelay(5000);
+					        //        LORA_state = LORA_IDLE;
+					        ev.commu = FAILSAFE;
+					        //      else
+					        //        LORA_state = LORA_ERROR;
 
-				if (loraAppStatus.maxPlayloadSize < loraAppStatus.playloadSize)
-					ev.commu = FAILSAFE;
-			}
-			bReadyToSend = true;
+					      }
+					      else   {
+				       osDelay(5000);
+
+					      if (loraAppStatus.maxPlayloadSize < loraAppStatus.playloadSize)
+					         ev.commu = FAILSAFE;
+
+					      }
+		    bReadyToSend = true;
+
+			//			SendUData(MasterTx_Buf[0] + 1, (uint8_t *) &sData_t, sizeof(sData_t));
+			//			//TODO:Send Data
+		    ev.commu =RUNNING;
 			break;
 		case SETTING:
 			SetOPMODE(3);
@@ -390,44 +451,67 @@ void StartLoRaTask(void const * argument)
 
 			//      WiMOD_LoRaWAN_SetMAC_CMD(&mac_cmd, sizeof(mac_cmd));
 			//
-			//      osDelay(5000);
+//			      osDelay(5000);
 ////			osTimerStart(telemetryTimerHandle, 5000 * loraAppStatus.period);
 			ev.commu = IDLE;
 			break;
 		case RUNNING:
-//
-//			//      if(GetDeviceStatus() != 0) {
-//			//        ev.commu = FAILSAFE;
-//			//        break;
-//			//      }
-//
-////			BSP_LED_Toggle(LED6);
-			bReadyToSend = false;
-			for (i = 0; i < 6; ++i) {
-				buf[0] = i;
-				for (j = 0; j < MasterLookupTableInputs[i].Size; ++j) {
-					memcpy(&buf[(j*2) + 1], &MasterLookupTableInputs[i].RegisterInput[j].ActValue, sizeof(int));
-				}
-				SendUData(iSlaveId + 1, (uint8_t *) &buf,
-						(sizeof(int16_t) * MasterLookupTableInputs[i].Size) + 1);
-				osDelay(30000);
-			}
+			 if(GetDeviceStatus() != 0) {
+						        ev.commu = FAILSAFE;
+						        break;
+						      }
 
-//			SendUData(MasterTx_Buf[0] + 1, (uint8_t *) &sData_t, sizeof(sData_t));
-//			//TODO:Send Data
-			ev.commu = ALARM;
+			// 			BSP_LED_Toggle(LED6);
+			 else
+			 {
+						bReadyToSend = false;
+					if(iSlaveId==1)
+					{
+						for (i = 0; i < 6; ++i) {
+							buf[0] = i;
+							for (j = 0; j < SchneiderLookupTableInputs[i].Size; ++j) {
+								memcpy(&buf[(j*2) + 1], &SchneiderLookupTableInputs[i].RegisterInput[j].ActValue, sizeof(int));
+							}
+							SendUData(iSlaveId + 1, (uint8_t *) &buf,
+									(sizeof(int16_t) * SchneiderLookupTableInputs[i].Size) + 1);
+							osDelay(30000);
+						}
+					}
+					if(iSlaveId==2)
+					{
+						for (i = 0; i < 8; ++i) {
+							buf[0] = i;
+							for (j = 0; j < MitsuLookupTableInputs[i].Size; ++j) {
+													memcpy(&buf[(j*2) + 1], &MitsuLookupTableInputs[i].RegisterInput[j].ActValue, sizeof(int));
+												}
+												SendUData(iSlaveId + 1, (uint8_t *) &buf,
+														(sizeof(int16_t) * MitsuLookupTableInputs[i].Size) + 1);
+												osDelay(30000);
+											}
+					}
+
+
+//						SendUData(MasterTx_Buf[0] + 1, (uint8_t *) &sData_t, sizeof(sData_t));
+//						SendUData(iSlaveId + 1, (uint8_t *) &buf,
+//					              (sizeof(int16_t) * SchneiderLookupTableInputs[i].Size) + 1);
+			//			//TODO:Send Data
+						ev.commu = ALARM;
+			 }
+						//ev.commu = IDLE;
+
 			break;
 		case ALARM:
 			ev.commu = IDLE;
-			break;
-		case FAILSAFE:
-////			osMailFree(msgMailHandle, &sData_t);
-//			Reactivate();
-//
-//			osDelay(5000);
-//
-//			ev.commu = POST;
-//
+//			break;
+//		case FAILSAFE:
+			////			osMailFree(msgMailHandle, &sData_t);
+			//			Reactivate();
+			//
+			//			osDelay(5000);
+			//
+			//			ev.commu = POST;
+			//
+
 			break;
 		default:
 			ev.commu = POST;

@@ -40,7 +40,7 @@
 //------------------------------------------------------------------------------
 //LoRa_App loraAppStatus;
 LoRa_App loraAppStatus = {
-    .devAddr.u32 = 0x00001ABF, //Device address (LSB)
+    .devAddr.u32 = 0x0000FCF, //Device address (LSB)
     .nwkSKey = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
         0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}, //Network key (MSB)
     .appSKey = {0xFF, 0xEE, 0xDD, 0xCC, 0xBB, 0xAA, 0x99, 0x88,
@@ -51,7 +51,7 @@ LoRa_App loraAppStatus = {
     .devEUI = {0x70, 0xB3, 0xD5, 0x8F, 0xFF, 0xFF, 0xFF, 0xFF},
 	.period = 2,
 };
-UART_HandleTypeDef * comPort;
+//UART_HandleTypeDef * comPort;
 
 // HCI Message Receiver callback
 static TWiMOD_HCI_Message*
@@ -231,11 +231,14 @@ WiMOD_LoRaWAN_Init(
 #ifdef Q_OS_WIN
 		const char*              comPort        // comPort
 #else
-		void
+		//void
+		UART_HandleTypeDef * comPort,
+		DataRxIndicated fnDataRx
+
 #endif
 		)
 {
-	comPort = &huart2;
+	//comPort = &huart2;
     // init HCI layer
     return WiMOD_HCI_Init(comPort,                  // comPort
                    WiMOD_LoRaWAN_Process_RxMessage, // receiver callback
