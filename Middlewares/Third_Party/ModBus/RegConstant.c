@@ -107,7 +107,7 @@ LookupTable	  SchneiderLookupTableInputs[NUMBER_SCHNEIDER_LOOKUP_INPUTS] = {
 		{.LookupAddress = 3077, .RegisterInput = {0}, .Size = 8 },  //Power factor
 		{.LookupAddress = 3760, .RegisterInput = {0}, .Size = 15 },	//Demand
 		{.LookupAddress = 21321, .RegisterInput = {0}, .Size = 8 }, //Harmonic
-		{.LookupAddress = 3109, .RegisterInput = {0}, .Size = 8 }, //Hz
+		{.LookupAddress = 3109, .RegisterInput = {0}, .Size = 2 }, // frequency Hz
 		{.LookupAddress = 2699, .RegisterInput = {0}, .Size = 8 }, // Energy
 //		{.LookupAddress = 3008, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3010, .RegisterInput = {0}, .Size = 2 },

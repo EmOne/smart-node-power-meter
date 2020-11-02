@@ -222,12 +222,12 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of modbusTask */
-  osThreadDef(modbusTask, StartModbusTask, osPriorityNormal, 0, 1280*2);
+  osThreadDef(modbusTask, StartModbusTask, osPriorityNormal, 0, 1280);
   modbusTaskHandle = osThreadCreate(osThread(modbusTask), NULL);
 
   /* definition and creation of loraTask */
-//  osThreadDef(loraTask, StartLoRaTask, osPriorityNormal, 0, 2048);
-//  loraTaskHandle = osThreadCreate(osThread(loraTask), NULL);
+  osThreadDef(loraTask, StartLoRaTask, osPriorityNormal, 0, 2048);
+  loraTaskHandle = osThreadCreate(osThread(loraTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -279,8 +279,9 @@ void StartModbusTask(void const * argument)
 			ev.sensor = IDLE;
 			break;
 		case IDLE:
-//		while(bReadyToSend == false)
-//				osDelay(1000);
+		while(bReadyToSend == false)
+// 			ev.commu = POST;
+				osDelay(1000);
 			ev.sensor = RUNNING;
 			break;
 		case SETTING:
@@ -319,22 +320,22 @@ void StartModbusTask(void const * argument)
 				if(iSlaveId==2)
 				{
 
-					Setup_BaudRate = 1200 ;
-					Setup_Parity = UART_PARITY_EVEN;
-					Setup_Stopbit = UART_STOPBITS_1;
-					Setup_Wordlength =UART_WORDLENGTH_9B;
+					Setup_BaudRate = 19200 ;
+					Setup_Parity = UART_PARITY_NONE;
+					Setup_Stopbit = UART_STOPBITS_2;
+					Setup_Wordlength =UART_WORDLENGTH_8B;
 					ModBusChange_UART_Config(Setup_BaudRate,Setup_Parity,Setup_Stopbit,Setup_Wordlength);
 				//	UART_Config(1200,UART_PARITY_EVEN,UART_STOPBITS_1);
 //					ModBusChange_UART_Config(1200,UART_PARITY_EVEN,UART_STOPBITS_1);
 //					uint8_t a[] = {0x02, 0x03, 0, 0x66, 0, 0x1,0x6F, 0xBC};
 //					ModBusMaster_UART_String(a,8);
 
-					for (i = 0; i < NUMBER_MITSU_LOOKUP_INPUTS; ++i) {
+					for (i = 0; i < NUMBER_SCHNEIDER_LOOKUP_INPUTS; ++i) {
 //						ModBusChange_UART_Config(Setup_BaudRate,Setup_Parity,Setup_Stopbit,Setup_Wordlength);
 
 						while (ModBusMasterRead(iSlaveId, 3,
-								MitsuLookupTableInputs[i].LookupAddress,
-								MitsuLookupTableInputs[i].Size, 1500) != TRUE) {
+								SchneiderLookupTableInputs[i].LookupAddress,
+								SchneiderLookupTableInputs[i].Size, 1000) != TRUE) {
 								osDelay(10);
 								MasterReadTimerValue += 10;
 						}
@@ -343,9 +344,36 @@ void StartModbusTask(void const * argument)
 
 				}
 
-//				ev.commu = RUNNING;
-//				while(ev.commu != IDLE);
-//				osDelay(5000);
+				else
+					if(iSlaveId==3)
+					{
+								Setup_BaudRate = 1200 ;
+								Setup_Parity = UART_PARITY_EVEN;
+								Setup_Stopbit = UART_STOPBITS_1;
+								Setup_Wordlength =UART_WORDLENGTH_9B;
+								ModBusChange_UART_Config(Setup_BaudRate,Setup_Parity,Setup_Stopbit,Setup_Wordlength);
+							//	UART_Config(1200,UART_PARITY_EVEN,UART_STOPBITS_1);
+			//					ModBusChange_UART_Config(1200,UART_PARITY_EVEN,UART_STOPBITS_1);
+			//					uint8_t a[] = {0x02, 0x03, 0, 0x66, 0, 0x1,0x6F, 0xBC};
+			//					ModBusMaster_UART_String(a,8);
+
+								for (i = 0; i < NUMBER_MITSU_LOOKUP_INPUTS; ++i) {
+			//						ModBusChange_UART_Config(Setup_BaudRate,Setup_Parity,Setup_Stopbit,Setup_Wordlength);
+
+									while (ModBusMasterRead(iSlaveId, 3,
+											MitsuLookupTableInputs[i].LookupAddress,
+											MitsuLookupTableInputs[i].Size, 1500) != TRUE) {
+											osDelay(10);
+											MasterReadTimerValue += 10;
+									}
+									osDelay(1000);
+								}
+
+					}
+
+				ev.commu = RUNNING;
+				while(ev.commu != IDLE);
+				osDelay(5000);
 			}
 			ev.sensor = IDLE;
 			break;
@@ -375,7 +403,7 @@ void StartLoRaTask(void const * argument)
 //	osEvent _event;
 	ev.commu = POST;
 	//  uint8_t mac_cmd[] = {0x01, 0x02};
-	uint8_t i, j, buf[40] = {};
+	uint8_t i, j, buf[48] = {};
 //	struct user_data_t *st;
 //  osTimerStart(telemetryTimerHandle, 15000);
 	/* Infinite loop */
@@ -392,12 +420,12 @@ void StartLoRaTask(void const * argument)
 			while (Ping() == 0)
 				osDelay(1000);
 //			//      Reset();
-			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
-			osDelay(100);
-			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_RESET);
-			osDelay(100);
-			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
-			osDelay(1000);
+//			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
+//			osDelay(100);
+//			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_RESET);
+//			osDelay(100);
+//			HAL_GPIO_WritePin(LR_NRST_GPIO_Port, LR_NRST_Pin, GPIO_PIN_SET);
+//			osDelay(1000);
 //
 //			while (Ping() == 0)
 //				osDelay(1000);
@@ -431,7 +459,7 @@ void StartLoRaTask(void const * argument)
 
 			//			SendUData(MasterTx_Buf[0] + 1, (uint8_t *) &sData_t, sizeof(sData_t));
 			//			//TODO:Send Data
-		    ev.commu =RUNNING;
+		    //ev.commu =RUNNING;
 			break;
 		case SETTING:
 			SetOPMODE(3);
@@ -467,18 +495,20 @@ void StartLoRaTask(void const * argument)
 			ev.commu = IDLE;
 			break;
 		case RUNNING:
-			 if(GetDeviceStatus() != 0) {
-						        ev.commu = FAILSAFE;
-						        break;
-						      }
-
-			// 			BSP_LED_Toggle(LED6);
-			 else
-			 {
+//			 if(GetDeviceStatus() != 0) {
+//						        ev.commu = FAILSAFE;
+//
+//						        break;
+//
+//						      }
+//
+//			// 			BSP_LED_Toggle(LED6);
+//			 else
+//			 {
 						bReadyToSend = false;
 					if(iSlaveId==1)
 					{
-						for (i = 0; i < 6; ++i) {
+						for (i = 0; i < 9; ++i) {
 							buf[0] = i;
 							for (j = 0; j < SchneiderLookupTableInputs[i].Size; ++j) {
 								memcpy(&buf[(j*2) + 1], &SchneiderLookupTableInputs[i].RegisterInput[j].ActValue, sizeof(int));
@@ -487,33 +517,51 @@ void StartLoRaTask(void const * argument)
 									(sizeof(int16_t) * SchneiderLookupTableInputs[i].Size) + 1);
 							osDelay(30000);
 						}
+						ev.commu = IDLE;
 					}
-					if(iSlaveId==2)
+					else if(iSlaveId==2)
+					{
+						for (i = 0; i < 9; ++i) {
+							buf[0] = i;
+							for (j = 0; j < SchneiderLookupTableInputs[i].Size; ++j) {
+								memcpy(&buf[(j*2) + 1], &SchneiderLookupTableInputs[i].RegisterInput[j].ActValue, sizeof(int));
+								}
+								SendUData(iSlaveId + 1, (uint8_t *) &buf,
+										(sizeof(int16_t) * SchneiderLookupTableInputs[i].Size) + 1);
+								osDelay(30000);
+						}
+
+
+						ev.commu = IDLE;
+
+					}
+					else if(iSlaveId==3)
 					{
 						for (i = 0; i < 8; ++i) {
 							buf[0] = i;
 							for (j = 0; j < MitsuLookupTableInputs[i].Size; ++j) {
-													memcpy(&buf[(j*2) + 1], &MitsuLookupTableInputs[i].RegisterInput[j].ActValue, sizeof(int));
-												}
-												SendUData(iSlaveId + 1, (uint8_t *) &buf,
-														(sizeof(int16_t) * MitsuLookupTableInputs[i].Size) + 1);
-												osDelay(30000);
-											}
-					}
+								memcpy(&buf[(j*2) + 1], &MitsuLookupTableInputs[i].RegisterInput[j].ActValue, sizeof(int));
+								}
+								SendUData(iSlaveId + 1, (uint8_t *) &buf,
+										(sizeof(int16_t) * MitsuLookupTableInputs[i].Size) + 1);
+								osDelay(30000);
+						}
 
+						ev.commu = IDLE;
+					}
 
 //						SendUData(MasterTx_Buf[0] + 1, (uint8_t *) &sData_t, sizeof(sData_t));
 //						SendUData(iSlaveId + 1, (uint8_t *) &buf,
 //					              (sizeof(int16_t) * SchneiderLookupTableInputs[i].Size) + 1);
 			//			//TODO:Send Data
-						ev.commu = ALARM;
-			 }
-						//ev.commu = IDLE;
-
-			break;
-		case ALARM:
-			ev.commu = IDLE;
+//						ev.commu = ALARM;
+//
+//						//ev.commu = IDLE;
+//
 //			break;
+//		case ALARM:
+//			ev.commu = IDLE;
+//		break;
 //		case FAILSAFE:
 			////			osMailFree(msgMailHandle, &sData_t);
 			//			Reactivate();
@@ -523,10 +571,10 @@ void StartLoRaTask(void const * argument)
 			//			ev.commu = POST;
 			//
 
-			break;
-		default:
-			ev.commu = POST;
-			break;
+//			break;
+//		default:
+//			ev.commu = POST;
+//			break;
 		}
 		osDelay(10);
 	}

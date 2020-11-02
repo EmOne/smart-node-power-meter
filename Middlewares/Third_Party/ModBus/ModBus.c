@@ -1005,16 +1005,29 @@ unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function
                             }
                             else if( SlaveNumber==2)
                             {
-								for (i = 0; i < NUMBER_MITSU_LOOKUP_INPUTS; ++i) {
-									if(MitsuLookupTableInputs[i].LookupAddress == StartAddress) {
-										for (j = 0; j < MitsuLookupTableInputs[i].Size; ++j) {
-											MitsuLookupTableInputs[i].RegisterInput[j].ActValue =
+								for (i = 0; i < NUMBER_SCHNEIDER_LOOKUP_INPUTS; ++i) {
+									if(SchneiderLookupTableInputs[i].LookupAddress == StartAddress) {
+										for (j = 0; j < SchneiderLookupTableInputs[i].Size; ++j) {
+											SchneiderLookupTableInputs[i].RegisterInput[j].ActValue =
 												MasterRegisterInputs[j].ActValue;
 										}
 
 										break;
 									}
 								}
+                            }
+                            else if( SlaveNumber==3)
+                             {
+                           		 for (i = 0; i < NUMBER_MITSU_LOOKUP_INPUTS; ++i) {
+                           			if(MitsuLookupTableInputs[i].LookupAddress == StartAddress) {
+                           				for (j = 0; j < MitsuLookupTableInputs[i].Size; ++j) {
+                           					MitsuLookupTableInputs[i].RegisterInput[j].ActValue =
+                           						MasterRegisterInputs[j].ActValue;
+                           				}
+
+                           				break;
+                           			}
+                           		}
                             }
                             MasterReadTimerValue        =0;
                             MasterReceiveCounter        =0;
