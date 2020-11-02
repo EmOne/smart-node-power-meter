@@ -280,15 +280,46 @@ void StartModbusTask(void const * argument)
 			for (j = 0; j < NUMBER_MASTER_LOOKUP_SLAVE; ++j)
 			{
 				iSlaveId = j+1;
-				for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS; ++i) {
+#if defined (USE_PM1200)
+				if(iSlaveId ==3) {
+					ModBusMaster_UART_Config(19200, UART_WORDLENGTH_8B, UART_PARITY_NONE, UART_STOPBITS_2);
+					for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS_PM1200; ++i) {
+						while (ModBusMasterRead(iSlaveId, 3,
+								MasterLookupTableInputsPM1200[i].LookupAddress,
+								MasterLookupTableInputsPM1200[i].Size, 3500) != TRUE) {
+							osDelay(10);
+							MasterReadTimerValue += 10;
+						}
+						osDelay(500);
+					}
+				} else {
+#elif defined (USE_SX1)
+				if(iSlaveId ==3) {
+					ModBusMaster_UART_Config(1200, UART_WORDLENGTH_9B, UART_PARITY_EVEN, UART_STOPBITS_1);
+					for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS_SX1; ++i) {
+						while (ModBusMasterRead(iSlaveId, 3,
+								MasterLookupTableInputsSX1[i].LookupAddress,
+								MasterLookupTableInputsSX1[i].Size, 3500) != TRUE) {
+							osDelay(10);
+							MasterReadTimerValue += 10;
+						}
+						osDelay(500);
+					}
+				} else {
+#endif /* USE_PM1200 */
+				ModBusMaster_UART_Config(19200, UART_WORDLENGTH_8B, UART_PARITY_NONE, UART_STOPBITS_2);
+				for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS_PM2200; ++i) {
 					while (ModBusMasterRead(iSlaveId, 3,
-							MasterLookupTableInputs[i].LookupAddress,
-							MasterLookupTableInputs[i].Size, 3500) != TRUE) {
+							MasterLookupTableInputsPM2200[i].LookupAddress,
+							MasterLookupTableInputsPM2200[i].Size, 3500) != TRUE) {
 						osDelay(10);
 						MasterReadTimerValue += 10;
 					}
 					osDelay(500);
 				}
+#if defined (USE_PM1200) | defined (USE_SX1)
+				}
+#endif /* USE_PM1200 */
 				ev.commu = RUNNING;
 				while(ev.commu != IDLE);
 				osDelay(5000);
@@ -403,15 +434,43 @@ void StartLoRaTask(void const * argument)
 //
 ////			BSP_LED_Toggle(LED6);
 			bReadyToSend = false;
-			for (i = 0; i < 6; ++i) {
+#if defined (USE_PM1200)
+			if(iSlaveId == 3) {
+				for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS_PM1200; ++i) {
+					buf[0] = i;
+					for (j = 0; j < MasterLookupTableInputsPM1200[i].Size; ++j) {
+						memcpy(&buf[(j*2) + 1], &MasterLookupTableInputsPM1200[i].RegisterInput[j].ActValue, sizeof(int));
+					}
+					SendUData(iSlaveId + 1, (uint8_t *) &buf,
+							(sizeof(int16_t) * MasterLookupTableInputsPM1200[i].Size) + 1);
+					osDelay(30000);
+				}
+			} else {
+#elif defined (USE_SX1)
+			if(iSlaveId == 3) {
+				for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS_SX1; ++i) {
+					buf[0] = i;
+					for (j = 0; j < MasterLookupTableInputsSX1[i].Size; ++j) {
+						memcpy(&buf[(j*2) + 1], &MasterLookupTableInputsSX1[i].RegisterInput[j].ActValue, sizeof(int));
+					}
+					SendUData(iSlaveId + 1, (uint8_t *) &buf,
+							(sizeof(int16_t) * MasterLookupTableInputsSX1[i].Size) + 1);
+					osDelay(30000);
+				}
+			} else {
+#endif
+			for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS_PM2200; ++i) {
 				buf[0] = i;
-				for (j = 0; j < MasterLookupTableInputs[i].Size; ++j) {
-					memcpy(&buf[(j*2) + 1], &MasterLookupTableInputs[i].RegisterInput[j].ActValue, sizeof(int));
+				for (j = 0; j < MasterLookupTableInputsPM2200[i].Size; ++j) {
+					memcpy(&buf[(j*2) + 1], &MasterLookupTableInputsPM2200[i].RegisterInput[j].ActValue, sizeof(int));
 				}
 				SendUData(iSlaveId + 1, (uint8_t *) &buf,
-						(sizeof(int16_t) * MasterLookupTableInputs[i].Size) + 1);
+						(sizeof(int16_t) * MasterLookupTableInputsPM2200[i].Size) + 1);
 				osDelay(30000);
 			}
+#if defined (USE_PM1200) || defined (USE_SX1)
+		}
+#endif
 
 //			SendUData(MasterTx_Buf[0] + 1, (uint8_t *) &sData_t, sizeof(sData_t));
 //			//TODO:Send Data

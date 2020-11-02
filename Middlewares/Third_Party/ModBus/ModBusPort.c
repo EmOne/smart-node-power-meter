@@ -89,7 +89,7 @@ void ModBusMaster_UART_Putch(unsigned char c)
 unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length)
 {
 	HAL_StatusTypeDef ret = HAL_OK;
-	HAL_UART_StateTypeDef uRet;
+//	HAL_UART_StateTypeDef uRet;
 
 	HAL_GPIO_WritePin(MB1_RE_GPIO_Port, MB1_RE_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(MB1_DE_GPIO_Port, MB1_DE_Pin, GPIO_PIN_SET);
@@ -160,6 +160,16 @@ void MODBUS_MASTER_TX_IRQHandler(void)
 	HAL_GPIO_WritePin(MB1_DE_GPIO_Port, MB1_DE_Pin, GPIO_PIN_RESET);
 }
 
+unsigned char ModBusMaster_UART_Config(const unsigned int baud, const unsigned int word_len, \
+		const unsigned int parity, const unsigned int stopbit) {
+	HAL_UART_DeInit(huartModbusMaster);
+	huartModbusMaster->Instance = USART3;
+	huartModbusMaster->Init.BaudRate = baud;
+	huartModbusMaster->Init.WordLength = word_len;
+	huartModbusMaster->Init.Parity = parity;
+	huartModbusMaster->Init.StopBits = stopbit;
+	return HAL_UART_Init(huartModbusMaster);
+}
 /******************************************************************************/
 
 

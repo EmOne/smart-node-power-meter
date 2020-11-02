@@ -950,8 +950,8 @@ unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function
             DoMasterTX(MasterTx_Buf_Size);
 
             MasterReceiveCounter        =0;
-            MasterRead_State            =RXTX_WAIT_ANSWER;
             MasterReadTimerValue        =0;
+            MasterRead_State            =RXTX_WAIT_ANSWER;
             ReturnValue                 =FALSE;
             break;
 
@@ -988,22 +988,54 @@ unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function
                     {
                         case MBFN_READ_HOLDING_REGISTERS:
                             HandleModbusMasterReadHoldingRegisters();
-                            for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS; ++i) {
-								if(MasterLookupTableInputs[i].LookupAddress == StartAddress) {
-									for (j = 0; j < MasterLookupTableInputs[i].Size; ++j) {
-										MasterLookupTableInputs[i].RegisterInput[j].ActValue =
+#if defined (USE_PM1200)
+                            if(SlaveNumber == 3){
+                            	for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS_PM1200; ++i) {
+									if(MasterLookupTableInputsPM1200[i].LookupAddress == StartAddress) {
+										for (j = 0; j < MasterLookupTableInputsPM1200[i].Size; ++j) {
+											MasterLookupTableInputsPM1200[i].RegisterInput[j].ActValue =
+												MasterRegisterInputs[j].ActValue;
+										}
+
+										break;
+									}
+								}
+                            } else {
+#elif defined (USE_SX1)
+                            	if(SlaveNumber == 3){
+									for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS_SX1; ++i) {
+										if(MasterLookupTableInputsSX1[i].LookupAddress == StartAddress) {
+											for (j = 0; j < MasterLookupTableInputsSX1[i].Size; ++j) {
+												MasterLookupTableInputsSX1[i].RegisterInput[j].ActValue =
+													MasterRegisterInputs[j].ActValue;
+											}
+
+											break;
+										}
+									}
+								} else {
+#endif /* USE_PM1200 */
+                            for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS_PM2200; ++i) {
+								if(MasterLookupTableInputsPM2200[i].LookupAddress == StartAddress) {
+									for (j = 0; j < MasterLookupTableInputsPM2200[i].Size; ++j) {
+										MasterLookupTableInputsPM2200[i].RegisterInput[j].ActValue =
 											MasterRegisterInputs[j].ActValue;
 									}
 
 									break;
 								}
                             }
+#if defined (USE_PM1200) || defined (USE_SX1)
+                        }
+#endif /* USE_PM1200 */
                             ReturnValue             = TRUE;
                             break;
                         default:
                             ReturnValue             = FALSE;
                             break;
                     }
+                    MasterReadTimerValue        =0;
+					MasterReceiveCounter        =0;
                     MasterRead_State    =RXTX_IDLE;
                 }
             }

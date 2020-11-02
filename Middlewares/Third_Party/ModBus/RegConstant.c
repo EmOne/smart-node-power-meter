@@ -96,13 +96,16 @@ RegStructure  RegisterOutputs       [NUMBER_OF_OUTPUT_REGISTERS]={
 
 #if MBFN_MASTER_REGISTERS_ENABLED > 0
 RegStructure  MasterRegisterInputs        [NUMBER_MASTER_INPUT_REGISTERS];
-LookupTable	  MasterLookupTableInputs     [NUMBER_MASTER_LOOKUP_INPUTS] = {
+LookupTable	  MasterLookupTableInputsPM2200     [NUMBER_MASTER_LOOKUP_INPUTS_PM2200] = {
 		{.LookupAddress = 2999, .RegisterInput = {0}, .Size = 12 }, //Current:12
 		{.LookupAddress = 3011, .RegisterInput = {0}, .Size = 8 },	//Current Unbalanced
 		{.LookupAddress = 3019, .RegisterInput = {0}, .Size = 16 }, //Voltage
 		{.LookupAddress = 3053, .RegisterInput = {0}, .Size = 8 },	//Power
 		{.LookupAddress = 3077, .RegisterInput = {0}, .Size = 8 },  //Power factor
 		{.LookupAddress = 3760, .RegisterInput = {0}, .Size = 15 },	//Demand
+		{.LookupAddress = 21321, .RegisterInput = {0}, .Size = 8 },	//Harmonic
+		{.LookupAddress = 3109, .RegisterInput = {0}, .Size = 2 },	//Hz
+		{.LookupAddress = 2699, .RegisterInput = {0}, .Size = 8 },	//Energy
 //		{.LookupAddress = 3008, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3010, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3012, .RegisterInput = {0}, .Size = 2 },
@@ -133,7 +136,34 @@ LookupTable	  MasterLookupTableInputs     [NUMBER_MASTER_LOOKUP_INPUTS] = {
 //		{.LookupAddress = 3768, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3770, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3772, .RegisterInput = {0}, .Size = 4 }
-};
+																};
+
+  LookupTable MasterLookupTableInputsSX1[NUMBER_MASTER_LOOKUP_INPUTS_SX1] = {
+		{ .LookupAddress = 0, .RegisterInput = { 0 }, .Size = 1 }, 		//Slave Address
+		{ .LookupAddress = 102, .RegisterInput = { 0 }, .Size = 1 },	//Line voltage
+		{ .LookupAddress = 105, .RegisterInput = { 0 }, .Size = 1 },	//Frequency
+		{ .LookupAddress = 112, .RegisterInput = { 0 }, .Size = 1 }, 	//Line Current (RMS)
+		{ .LookupAddress = 115, .RegisterInput = { 0 }, .Size = 1 },	//Active Power (W)
+		{ .LookupAddress = 110, .RegisterInput = { 0 }, .Size = 2 }, 	//Active Energy
+		{ .LookupAddress = 100, .RegisterInput = { 0 }, .Size = 2 }, 	//Serial No.
+		{ .LookupAddress = 113, .RegisterInput = { 0 }, .Size = 1 },	//Current Rating
+  																};
+
+LookupTable MasterLookupTableInputsPM1200[NUMBER_MASTER_LOOKUP_INPUTS_PM1200] = {
+		{ .LookupAddress = 3000, .RegisterInput = { 0 }, .Size = 16 }, 	//Total RMS Block
+		{ .LookupAddress = 3030, .RegisterInput = { 0 }, .Size = 16 },	//Phase R
+		{ .LookupAddress = 3060, .RegisterInput = { 0 }, .Size = 16 }, 	//Phase Y
+		{ .LookupAddress = 3090, .RegisterInput = { 0 }, .Size = 16 },	//Phase B
+		{ .LookupAddress = 3120, .RegisterInput = { 0 }, .Size = 12 }, 	//Forward Integrated Block
+		{ .LookupAddress = 3150, .RegisterInput = { 0 }, .Size = 12 },	//Reverse Integrated Block:
+		{ .LookupAddress = 3180, .RegisterInput = { 0 }, .Size = 12 },	//Total Integrated Block
+		{ .LookupAddress = 3734, .RegisterInput = { 0 }, .Size = 6 },	//Demand Block:
+		{ .LookupAddress = 3740, .RegisterInput = { 0 }, .Size = 4 },	//Max Demand Block:
+		{ .LookupAddress = 3700, .RegisterInput = { 0 }, .Size = 16 },	//Phase Angle Block
+		{ .LookupAddress = 3860, .RegisterInput = { 0 }, .Size = 12 },	//THD
+		{ .LookupAddress = 3914, .RegisterInput = { 0 }, .Size = 2 },	//Hz
+		{ .LookupAddress = 3880, .RegisterInput = { 0 }, .Size = 12 },	//Percentage of Load parameters
+		};
 
 #endif
 /********************End of Input/Output Coils and Registers*******************/

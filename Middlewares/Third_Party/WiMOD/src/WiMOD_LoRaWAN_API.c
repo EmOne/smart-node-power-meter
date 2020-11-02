@@ -2268,7 +2268,7 @@ int GetLinkADR(void) {
 //------------------------------------------------------------------------------
 int SetLinkADR(void) {
 	printf("SetLinkADR\n\r");
-	uint8_t payload = 1;
+	uint8_t payload = 2;
 //	LinkADRReq Option:
 //	0: LoRaWAN v1.0.2
 //	1: Semtech proposal
