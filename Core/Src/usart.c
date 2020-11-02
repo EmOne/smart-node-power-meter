@@ -137,7 +137,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     */
     GPIO_InitStruct.Pin = MB1_TX_Pin|MB1_RX_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -291,14 +291,11 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 unsigned char UART_Config(unsigned int BaudRate,unsigned int Parity,unsigned int StopBits)
 {
-//	HAL_UART_DeInit(&huart3);
-//	HAL_DMA_Abort(&hdma_usart3_rx);
-
-//	HAL_DMA_Abort(&hdma_usart3_tx);
+	HAL_UART_DeInit(&huart3);
 	huart3.Instance = USART3;
 	huart3.Init.BaudRate=BaudRate;
 	huart3.Init.Parity=Parity;
-	huart3.Init.WordLength = UART_WORDLENGTH_8B;
+	huart3.Init.WordLength = UART_WORDLENGTH_9B;
 	huart3.Init.StopBits=StopBits;
 	huart3.Init.Mode = UART_MODE_TX_RX;
 	huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;

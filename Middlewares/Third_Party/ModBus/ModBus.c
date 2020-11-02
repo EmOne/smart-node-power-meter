@@ -866,7 +866,7 @@ void InitModbusMaster(void)
 
 unsigned char DoMasterTX(unsigned int Length)
 {  
-	memset(MasterReceiveBuffer, 0, sizeof(MasterReceiveBuffer));
+//	memset(MasterReceiveBuffer, 0, sizeof(MasterReceiveBuffer));
     ModBusMaster_UART_String(MasterTx_Buf,Length);
 
     MasterTx_Buf_Size = 0;
@@ -1016,6 +1016,8 @@ unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function
 									}
 								}
                             }
+                            MasterReadTimerValue        =0;
+                            MasterReceiveCounter        =0;
                             ReturnValue             = TRUE;
                             break;
                         default:
