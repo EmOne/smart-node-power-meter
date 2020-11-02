@@ -136,7 +136,8 @@ LookupTable	  MasterLookupTableInputsPM2200     [NUMBER_MASTER_LOOKUP_INPUTS_PM2
 //		{.LookupAddress = 3768, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3770, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3772, .RegisterInput = {0}, .Size = 4 }
-																};
+
+};
 
   LookupTable MasterLookupTableInputsSX1[NUMBER_MASTER_LOOKUP_INPUTS_SX1] = {
 		{ .LookupAddress = 0, .RegisterInput = { 0 }, .Size = 1 }, 		//Slave Address
@@ -147,7 +148,7 @@ LookupTable	  MasterLookupTableInputsPM2200     [NUMBER_MASTER_LOOKUP_INPUTS_PM2
 		{ .LookupAddress = 110, .RegisterInput = { 0 }, .Size = 2 }, 	//Active Energy
 		{ .LookupAddress = 100, .RegisterInput = { 0 }, .Size = 2 }, 	//Serial No.
 		{ .LookupAddress = 113, .RegisterInput = { 0 }, .Size = 1 },	//Current Rating
-  																};
+};
 
 LookupTable MasterLookupTableInputsPM1200[NUMBER_MASTER_LOOKUP_INPUTS_PM1200] = {
 		{ .LookupAddress = 3000, .RegisterInput = { 0 }, .Size = 16 }, 	//Total RMS Block
@@ -163,7 +164,8 @@ LookupTable MasterLookupTableInputsPM1200[NUMBER_MASTER_LOOKUP_INPUTS_PM1200] = 
 		{ .LookupAddress = 3860, .RegisterInput = { 0 }, .Size = 12 },	//THD
 		{ .LookupAddress = 3914, .RegisterInput = { 0 }, .Size = 2 },	//Hz
 		{ .LookupAddress = 3880, .RegisterInput = { 0 }, .Size = 12 },	//Percentage of Load parameters
-		};
+
+};
 
 #endif
 /********************End of Input/Output Coils and Registers*******************/

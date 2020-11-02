@@ -17,7 +17,7 @@
 #define NUMBER_MASTER_LOOKUP_INPUTS           	9                               // Modbus RTU Master Lookup Input Register  :   Define look up table fot specific registers
 #define NUMBER_MASTER_LOOKUP_INPUTS_PM2200     	9                               // Modbus RTU Master Lookup Input Register  :   Define look up table fot specific registers
 #define NUMBER_MASTER_LOOKUP_INPUTS_PM1200     	13                               // Modbus RTU Master Lookup Input Register  :   Define look up table fot specific registers
-#define NUMBER_MASTER_LOOKUP_INPUTS_SX1     	7                               // Modbus RTU Master Lookup Input Register  :   Define look up table fot specific registers
+#define NUMBER_MASTER_LOOKUP_INPUTS_SX1     	8                               // Modbus RTU Master Lookup Input Register  :   Define look up table fot specific registers
 #define NUMBER_MASTER_LOOKUP_SLAVE           	3
 
 #define RECEIVE_BUFFER_SIZE                     250                             // Modbus RTU Slave icin kullanilacak buffer boyutu
@@ -77,7 +77,9 @@ typedef struct
             RegStructure  		RegisterInput[NUMBER_MASTER_INPUT_REGISTERS];
 } LookupTable;
 
-extern LookupTable	  MasterLookupTableInputsPM2200[NUMBER_MASTER_LOOKUP_INPUTS];
+extern LookupTable	  MasterLookupTableInputsPM2200[NUMBER_MASTER_LOOKUP_INPUTS_PM2200];
+extern LookupTable	  MasterLookupTableInputsPM1200[NUMBER_MASTER_LOOKUP_INPUTS_PM1200];
+extern LookupTable	  MasterLookupTableInputsSX1[NUMBER_MASTER_LOOKUP_INPUTS_SX1];
 #endif
 
 extern unsigned int SlaveTimerValue;
