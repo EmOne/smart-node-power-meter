@@ -175,15 +175,18 @@ WiMOD_HCI_SendMessage(TWiMOD_HCI_Message* txMessage)
 //  @brief: read incoming serial data
 //
 //------------------------------------------------------------------------------
-
+UINT8   rxBuf[255] = {0};
+UINT8   rxBuf_idx;
 void
 WiMOD_HCI_Process()
 {
-    UINT8   rxBuf[255] = { 0 };
 
+	if (rxBuf_idx >= sizeof(rxBuf)) {
+		rxBuf_idx = 0;
+	}
     // read small chunk of data
-    int rxLength = SerialDevice_ReadData(rxBuf, sizeof(rxBuf));
-
+    int rxLength = SerialDevice_ReadData(&rxBuf[rxBuf_idx], 1);
+    rxBuf_idx = (rxBuf[rxBuf_idx] == SLIP_END)? 0: rxBuf_idx++;
     // data available ?
     if (rxLength > 0)
     {

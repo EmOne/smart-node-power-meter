@@ -77,20 +77,20 @@ void MX_FREERTOS_Init(void);
 //  return len;
 //}
 
-int _write(int file, char *ptr, int len) {
-  int DataIdx;
-
-//  osSemaphoreWait(coreBinarySemHandle, 5000);
-
-  for (DataIdx = 0; DataIdx < len; DataIdx++) {
-//    __io_putchar(*ptr++);
-    //HAL_UART_Transmit(&huart2, (uint8_t *)ptr++, 1, 500);
-  }
-
-//  osSemaphoreRelease(coreBinarySemHandle);
-
-  return len;
-}
+//int _write(int file, char *ptr, int len) {
+//  int DataIdx;
+//
+////  osSemaphoreWait(coreBinarySemHandle, 5000);
+//
+////  for (DataIdx = 0; DataIdx < len; DataIdx++) {
+//////    __io_putchar(*ptr++);
+////    //HAL_UART_Transmit(&huart2, (uint8_t *)ptr++, 1, 500);
+////  }
+//
+////  osSemaphoreRelease(coreBinarySemHandle);
+//
+//  return len;
+//}
 
 //int __io_putchar(int ch) {
 //  return HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 500) == HAL_OK ? 0 : -1;
@@ -128,9 +128,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-//  MX_USART3_UART_Init();
+  MX_USART3_UART_Init();
   MX_USART2_UART_Init();
-  MX_USART6_UART_Init();
+//  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */

@@ -16,6 +16,7 @@
 #define NUMBER_MASTER_INPUT_REGISTERS          16                               // Modbus RTU Master Input Register Sayisi  :   Kullanilacak Master Data Register sayisi buradan girilmeli
 #define NUMBER_SCHNEIDER_LOOKUP_INPUTS          9                               // Modbus RTU Master Lookup Input Register  :   Define look up table fot specific registers
 #define NUMBER_MITSU_LOOKUP_INPUTS				8
+#define NUMBER_MASTER_LOOKUP_INPUTS_PM1200		13
 #define NUMBER_MASTER_LOOKUP_SLAVE           	3
 
 
@@ -78,7 +79,7 @@ typedef struct
 
 extern LookupTable	  SchneiderLookupTableInputs[NUMBER_SCHNEIDER_LOOKUP_INPUTS];
 extern LookupTable		 MitsuLookupTableInputs[NUMBER_MITSU_LOOKUP_INPUTS];
-
+extern LookupTable MasterLookupTableInputsPM1200[NUMBER_MASTER_LOOKUP_INPUTS_PM1200];
 #endif
 
 extern unsigned int SlaveTimerValue;

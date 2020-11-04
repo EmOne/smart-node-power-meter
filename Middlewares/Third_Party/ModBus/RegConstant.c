@@ -141,7 +141,7 @@ LookupTable	  SchneiderLookupTableInputs[NUMBER_SCHNEIDER_LOOKUP_INPUTS] = {
 //		{.LookupAddress = 3772, .RegisterInput = {0}, .Size = 4 }
 																};
 
-
+#if defined (USE_SX1)
 
   LookupTable	 MitsuLookupTableInputs     [NUMBER_MITSU_LOOKUP_INPUTS] = {
   		{.LookupAddress = 0, .RegisterInput = {0}, .Size = 1 }, //Slave Address
@@ -153,8 +153,23 @@ LookupTable	  SchneiderLookupTableInputs[NUMBER_SCHNEIDER_LOOKUP_INPUTS] = {
 		{.LookupAddress = 100, .RegisterInput = {0}, .Size = 2 },   //Serial No.
   		{.LookupAddress = 113, .RegisterInput = {0}, .Size = 1 },	//Current Rating
   																};
+#elif defined (USE_PM1200)
+  LookupTable MasterLookupTableInputsPM1200[NUMBER_MASTER_LOOKUP_INPUTS_PM1200] = {
+  		{ .LookupAddress = 3000, .RegisterInput = { 0 }, .Size = 16 }, 	//Total RMS Block
+  		{ .LookupAddress = 3030, .RegisterInput = { 0 }, .Size = 16 },	//Phase R
+  		{ .LookupAddress = 3060, .RegisterInput = { 0 }, .Size = 16 }, 	//Phase Y
+  		{ .LookupAddress = 3090, .RegisterInput = { 0 }, .Size = 16 },	//Phase B
+  		{ .LookupAddress = 3120, .RegisterInput = { 0 }, .Size = 12 }, 	//Forward Integrated Block
+  		{ .LookupAddress = 3150, .RegisterInput = { 0 }, .Size = 12 },	//Reverse Integrated Block:
+  		{ .LookupAddress = 3180, .RegisterInput = { 0 }, .Size = 12 },	//Total Integrated Block
+  		{ .LookupAddress = 3734, .RegisterInput = { 0 }, .Size = 6 },	//Demand Block:
+  		{ .LookupAddress = 3740, .RegisterInput = { 0 }, .Size = 4 },	//Max Demand Block:
+  		{ .LookupAddress = 3700, .RegisterInput = { 0 }, .Size = 16 },	//Phase Angle Block
+  		{ .LookupAddress = 3860, .RegisterInput = { 0 }, .Size = 12 },	//THD
+  		{ .LookupAddress = 3914, .RegisterInput = { 0 }, .Size = 2 },	//Hz
+  		{ .LookupAddress = 3880, .RegisterInput = { 0 }, .Size = 12 },	//Percentage of Load parameters
 
-
-
+  };
+#endif /* USE_SX1 USE_PM1200*/
 #endif
 /********************End of Input/Output Coils and Registers*******************/

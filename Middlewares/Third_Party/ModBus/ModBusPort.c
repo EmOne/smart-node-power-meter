@@ -91,7 +91,7 @@ void ModBusMaster_UART_Putch(unsigned char c)
 unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length)
 {
 	HAL_StatusTypeDef ret = HAL_OK;
-	HAL_UART_StateTypeDef uRet;
+//	HAL_UART_StateTypeDef uRet;
 
 
 	HAL_GPIO_WritePin(MB1_RE_GPIO_Port, MB1_RE_Pin, GPIO_PIN_SET);
@@ -103,7 +103,7 @@ unsigned char ModBusMaster_UART_String(unsigned char *s, unsigned int Length)
 //        Length--;
 //    }
 
-	ret = HAL_UART_Transmit(huartModbusMaster, s, Length,500);
+	ret = HAL_UART_Transmit(huartModbusMaster, s, Length, 500);
 	if (ret == HAL_OK)
     {
 		while(HAL_UART_STATE_BUSY_TX_RX == HAL_UART_GetState(huartModbusMaster));
@@ -166,7 +166,7 @@ void MODBUS_SLAVE_TX_IRQHandler(void)
 void MODBUS_MASTER_RX_IRQHandler(void)
 //void __attribute__((interrupt, , auto_psv)) _U2RXInterrupt( void )
 {
-	__HAL_UART_CLEAR_FLAG(huartModbusMaster,UART_FLAG_RXNE);
+//	__HAL_UART_CLEAR_FLAG(huartModbusMaster,UART_FLAG_RXNE);
 //    IFS1bits.U2RXIF = 0;                                                        // UART alim kesme bayragi temizleniyor
 //		MasterReceiveBuffer[MasterReceiveCounter] = huartModbusMaster->Instance->DR;
 		MasterReceiveCounter++;

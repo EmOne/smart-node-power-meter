@@ -949,12 +949,13 @@ unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function
             MasterTx_Buf[6]             = MasterRead_CRC16 & 0x00FF;
             MasterTx_Buf[7]             =(MasterRead_CRC16 & 0xFF00) >> 8;
 
-            DoMasterTX(MasterTx_Buf_Size);
-
-            MasterReceiveCounter        =0;
+			MasterReceiveCounter        =0;
             MasterRead_State            =RXTX_WAIT_ANSWER;
             MasterReadTimerValue        =0;
             ReturnValue                 =FALSE;
+
+            DoMasterTX(MasterTx_Buf_Size);
+
             break;
 
         case RXTX_WAIT_ANSWER:
@@ -990,8 +991,39 @@ unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function
                     {
                         case MBFN_READ_HOLDING_REGISTERS:
                             HandleModbusMasterReadHoldingRegisters();
-                            if( SlaveNumber==1)
+#ifdef USE_SX1
+                            if( SlaveNumber==3)
+							{
+								 for (i = 0; i < NUMBER_MITSU_LOOKUP_INPUTS; ++i) {
+									if(MitsuLookupTableInputs[i].LookupAddress == StartAddress) {
+										for (j = 0; j < MitsuLookupTableInputs[i].Size; ++j) {
+											MitsuLookupTableInputs[i].RegisterInput[j].ActValue =
+												MasterRegisterInputs[j].ActValue;
+										}
+
+										break;
+									}
+								}
+							}
+                            else
                             {
+#elif defined (USE_PM1200)
+							if( SlaveNumber==3)
+							{
+								 for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS_PM1200; ++i) {
+									if(MasterLookupTableInputsPM1200[i].LookupAddress == StartAddress) {
+										for (j = 0; j < MasterLookupTableInputsPM1200[i].Size; ++j) {
+											MasterLookupTableInputsPM1200[i].RegisterInput[j].ActValue =
+													MasterRegisterInputs[j].ActValue;
+										}
+
+										break;
+									}
+								}
+							}
+							else
+							{
+#endif
 								for (i = 0; i < NUMBER_SCHNEIDER_LOOKUP_INPUTS; ++i) {
 									if(SchneiderLookupTableInputs[i].LookupAddress == StartAddress) {
 										for (j = 0; j < SchneiderLookupTableInputs[i].Size; ++j) {
@@ -1002,44 +1034,22 @@ unsigned char ModBusMasterRead(unsigned char SlaveNumber, unsigned char Function
 										break;
 									}
 								}
-                            }
-                            else if( SlaveNumber==2)
-                            {
-								for (i = 0; i < NUMBER_SCHNEIDER_LOOKUP_INPUTS; ++i) {
-									if(SchneiderLookupTableInputs[i].LookupAddress == StartAddress) {
-										for (j = 0; j < SchneiderLookupTableInputs[i].Size; ++j) {
-											SchneiderLookupTableInputs[i].RegisterInput[j].ActValue =
-												MasterRegisterInputs[j].ActValue;
-										}
 
-										break;
-									}
-								}
-                            }
-                            else if( SlaveNumber==3)
-                             {
-                           		 for (i = 0; i < NUMBER_MITSU_LOOKUP_INPUTS; ++i) {
-                           			if(MitsuLookupTableInputs[i].LookupAddress == StartAddress) {
-                           				for (j = 0; j < MitsuLookupTableInputs[i].Size; ++j) {
-                           					MitsuLookupTableInputs[i].RegisterInput[j].ActValue =
-                           						MasterRegisterInputs[j].ActValue;
-                           				}
+#if defined (USE_PM1200) || defined(USE_SX1)
+							}
+#endif
 
-                           				break;
-                           			}
-                           		}
-                            }
-                            MasterReadTimerValue        =0;
-                            MasterReceiveCounter        =0;
                             ReturnValue             = TRUE;
                             break;
                         default:
                             ReturnValue             = FALSE;
                             break;
-                    }
+						}
+					MasterReadTimerValue        =0;
+					MasterReceiveCounter        =0;
                     MasterRead_State    =RXTX_IDLE;
+                    }
                 }
-            }
             break;
 
         case RXTX_TIMEOUT:
