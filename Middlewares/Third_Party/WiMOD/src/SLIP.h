@@ -61,7 +61,7 @@ int
 SLIP_EncodeData(UINT8* dstBuffer, int txBufferSize, UINT8* srcData,int srcLength);
 
 // Decode incoming Data
-void
+int
 SLIP_DecodeData(UINT8*  srcData, int srcLength);
 
 

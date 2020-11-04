@@ -218,7 +218,7 @@ void MX_FREERTOS_Init(void) {
   modbusTaskHandle = osThreadCreate(osThread(modbusTask), NULL);
 
   /* definition and creation of loraTask */
-  osThreadDef(loraTask, StartLoRaTask, osPriorityNormal, 0, 2048);
+  osThreadDef(loraTask, StartLoRaTask, osPriorityNormal, 0, 1280);
   loraTaskHandle = osThreadCreate(osThread(loraTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -277,9 +277,8 @@ void StartModbusTask(void const * argument)
 		case SETTING:
 			break;
 		case RUNNING:
-			for (j = 0; j < NUMBER_MASTER_LOOKUP_SLAVE; ++j)
+			for (iSlaveId = 1; j <= NUMBER_MASTER_LOOKUP_SLAVE; ++j)
 			{
-				iSlaveId = j+1;
 #if defined (USE_PM1200)
 				if(iSlaveId ==3) {
 					ModBusMaster_UART_Config(19200, UART_WORDLENGTH_8B, UART_PARITY_NONE, UART_STOPBITS_2);

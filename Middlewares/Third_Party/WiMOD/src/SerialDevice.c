@@ -138,15 +138,20 @@ SerialDevice_Open(
     //    if (hWiModUart->gState == HAL_UART_STATE_READY) {
 //		return true;
 //	}
-//	hWiModUart->Instance = USART6;
-//	hWiModUart->Init.Mode = UART_MODE_TX_RX;
-//	hWiModUart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
-//	hWiModUart->Init.OverSampling = UART_OVERSAMPLING_16;
+	hWiModUart->Instance = USART2;
+	hWiModUart->Init.Mode = UART_MODE_TX_RX;
+	hWiModUart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	hWiModUart->Init.OverSampling = UART_OVERSAMPLING_16;
 //	hWiModUart->RxCpltCallback = USART_ITCharManager;
-//	hWiModUart->Init.BaudRate = baudRate;
-//	hWiModUart->Init.WordLength = dataBits;
-//	hWiModUart->Init.StopBits = UART_STOPBITS_1;
-//	hWiModUart->Init.Parity = parity;
+	hWiModUart->Init.BaudRate = baudRate;
+	hWiModUart->Init.WordLength = dataBits;
+	hWiModUart->Init.StopBits = UART_STOPBITS_1;
+	hWiModUart->Init.Parity = parity;
+
+	if(HAL_UART_Init(hWiModUart) != HAL_OK){
+		SerialDevice_Close();
+		Error_Handler();
+	}
 
 	if (HAL_UART_Receive_IT(hWiModUart, &UsartTextString, 1) == HAL_OK)
 	{
@@ -154,8 +159,7 @@ SerialDevice_Open(
 		return true;
 	}
 
-	SerialDevice_Close();
-	Error_Handler();
+
 //	if (HAL_UARTEx_SetTxFifoThreshold(&huart, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
 //	{
 //	_Error_Handler(__FILE__, __LINE__);
@@ -322,11 +326,12 @@ SerialDevice_ReadData(UINT8* rxBuffer, size_t rxBufferSize)
     }
 #else
     // Todo : add your own platform specific code here
-    *rxBuffer = UsartTextString;
-	rxBufferSize = 1;
-        HAL_UART_Receive_IT(hWiModUart, &UsartTextString, 1);
+    *rxBuffer = (UINT8) UsartTextString;
+    rxBufferSize = 1;
+    UsartTextString = 0;
+    HAL_UART_Receive_IT(hWiModUart, &UsartTextString, 1);
 	return rxBufferSize;
-//    if(HAL_UART_Receive(hWiModUart, rxBuffer, rxBufferSize, 100) != HAL_ERROR)
+//    if(HAL_UART_Receive_IT(hWiModUart, rxBuffer, rxBufferSize, 100) != HAL_ERROR)
 //    {
 //    	return rxBufferSize;
 //    }

@@ -219,7 +219,7 @@ SLIP_StoreRxByte(UINT8 rxByte)
 //
 //------------------------------------------------------------------------------
 
-void
+int
 SLIP_DecodeData(UINT8* srcData, int srcLength)
 {
     // init result
@@ -317,6 +317,7 @@ SLIP_DecodeData(UINT8* srcData, int srcLength)
                     break;
         }
     }
+    return SLIP.RxState;
 }
 
 //------------------------------------------------------------------------------

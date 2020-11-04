@@ -179,19 +179,20 @@ WiMOD_HCI_SendMessage(TWiMOD_HCI_Message* txMessage)
 void
 WiMOD_HCI_Process()
 {
-    UINT8   rxBuf[255] = { 0 };
 
-    // read small chunk of data
-    int rxLength = SerialDevice_ReadData(rxBuf, sizeof(rxBuf));
+	UINT8   rxBuf[255] = { 0 };
 
-    // data available ?
-    if (rxLength > 0)
-    {
-        // yes, forward to SLIP decoder, decoded SLIP message will be passed to
-        // function "WiMOD_HCI_ProcessRxMessage"
-        SLIP_DecodeData(rxBuf, rxLength);
+	    // read small chunk of data
+	    int rxLength = SerialDevice_ReadData(rxBuf, sizeof(rxBuf));
 
-    }
+	    // data available ?
+	    if (rxLength > 0)
+	    {
+	        // yes, forward to SLIP decoder, decoded SLIP message will be passed to
+	        // function "WiMOD_HCI_ProcessRxMessage"
+	        SLIP_DecodeData(rxBuf, rxLength);
+
+	    }
 }
 
 //------------------------------------------------------------------------------
