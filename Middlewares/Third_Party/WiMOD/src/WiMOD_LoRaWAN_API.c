@@ -1919,7 +1919,7 @@ int SetRadioStack(void) {
 
 	UINT8 data[7];
 
-	data[0] = 0x3;	//Default Data Rate Index
+	data[0] = 0x2;	//Default Data Rate Index
 	data[1] = 0x10;	//Default TX Power Level (EIRP)
 	data[2] = 0b11000101;
 //	    Bit 0: 0 = Adaptive Data Rate disabled	    1 = Adaptive Data Rate enabled
@@ -2271,7 +2271,7 @@ int GetLinkADR(void) {
 //------------------------------------------------------------------------------
 int SetLinkADR(void) {
 	printf("SetLinkADR\n\r");
-	uint8_t payload = 1;
+	uint8_t payload = 0;
 //	LinkADRReq Option:
 //	0: LoRaWAN v1.0.2
 //	1: Semtech proposal

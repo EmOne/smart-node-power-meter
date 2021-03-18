@@ -279,7 +279,7 @@ void StartModbusTask(void const * argument)
 			ev.sensor = IDLE;
 			break;
 		case IDLE:
-		while(bReadyToSend == false)
+			while(bReadyToSend == false)
 				osDelay(1000);
 			ev.sensor = RUNNING;
 			break;
@@ -346,7 +346,7 @@ void StartModbusTask(void const * argument)
 
 						while (ModBusMasterRead(iSlaveId, 3,
 								SchneiderLookupTableInputs[i].LookupAddress,
-								SchneiderLookupTableInputs[i].Size, 3500) != TRUE) {
+								SchneiderLookupTableInputs[i].Size, 1000) != TRUE) {
 							osDelay(10);
 							MasterReadTimerValue += 10;
 						}
@@ -356,8 +356,8 @@ void StartModbusTask(void const * argument)
 				}
 #endif
 				ev.commu = RUNNING;
-				while(ev.commu != IDLE);
-				osDelay(5000);
+				while(ev.commu != IDLE) osDelay(1000);
+					osDelay(5000);
 			}
 			ev.sensor = IDLE;
 			break;
@@ -520,8 +520,10 @@ void StartLoRaTask(void const * argument)
 					}
 				} else {
 #endif
-				for (i = 0; i < NUMBER_SCHNEIDER_LOOKUP_INPUTS; ++i) {
-					buf[0] = i;
+					for (i = 0; i < NUMBER_SCHNEIDER_LOOKUP_INPUTS; ++i) {
+						buf[0] = i;
+#if 0
+
 					for (j = 0; j < SchneiderLookupTableInputs[i].Size; ++j) {
 						memcpy(&buf[(j * 2) + 1],
 								&SchneiderLookupTableInputs[i].RegisterInput[j].ActValue,
@@ -529,10 +531,32 @@ void StartLoRaTask(void const * argument)
 					}
 					SendUData(iSlaveId + 1, (uint8_t*) &buf,
 							(sizeof(int16_t)
-									* SchneiderLookupTableInputs[i].Size) + 1);
-					osDelay(60000);
+									* SchneiderLookupTableInputs[i].Size)
+									+ 1);
+					osDelay(1000);
+#else
+					unsigned int look = SchneiderLookupTableInputs[i].LookupAddress;
+					for (j = 0; j < SchneiderLookupTableInputs[i].Size; j+=2) {
+						memcpy(&buf[1],
+								&look,
+								sizeof(int));
+						memcpy(&buf[3],
+								&SchneiderLookupTableInputs[i].RegisterInput[j].ActValue,
+								sizeof(int));
+						memcpy(&buf[5],
+								&SchneiderLookupTableInputs[i].RegisterInput[j+1].ActValue,
+								sizeof(int));
+						SendUData(iSlaveId + 1, (uint8_t*) &buf,
+											7);
+						look +=2;
+						osDelay(15000);
+					}
+
+#endif
 				}
+#if defined (USE_PM1200) || defined (USE_SX1)
 			}
+#endif /* defined (USE_PM1200) || defined (USE_SX1) */
 
 
 //						SendUData(MasterTx_Buf[0] + 1, (uint8_t *) &sData_t, sizeof(sData_t));
@@ -546,7 +570,7 @@ void StartLoRaTask(void const * argument)
 			break;
 		case ALARM:
 			ev.commu = IDLE;
-		break;
+			break;
 		case FAILSAFE:
 			////			osMailFree(msgMailHandle, &sData_t);
 			Reactivate();
