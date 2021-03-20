@@ -28,7 +28,7 @@
 /* USER CODE BEGIN Includes */
 #include "ModBus.h"
 #include "ModBusPort.h"
-
+#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,19 +63,19 @@ void MX_FREERTOS_Init(void);
 /**
  * @brief		Trace output for standard output
  */
-//int fputc(int ch, FILE *f) {
-//  return ITM_SendChar(ch);
-//}
+int fputc(int ch, FILE *f) {
+  return ITM_SendChar(ch);
+}
 
-//int _read(int file, char *ptr, int len) {
-//  int DataIdx;
-//
-//  for (DataIdx = 0; DataIdx < len; DataIdx++) {
-//    *(uint8_t *)ptr++ = __io_getchar();
-//  }
-//
-//  return len;
-//}
+int _read(int file, char *ptr, int len) {
+  int DataIdx;
+
+  for (DataIdx = 0; DataIdx < len; DataIdx++) {
+    *(uint8_t *)ptr++ = __io_getchar();
+  }
+
+  return len;
+}
 
 int _write(int file, char *ptr, int len) {
   int DataIdx;
@@ -83,8 +83,8 @@ int _write(int file, char *ptr, int len) {
 //  osSemaphoreWait(coreBinarySemHandle, 5000);
 
   for (DataIdx = 0; DataIdx < len; DataIdx++) {
-//    __io_putchar(*ptr++);
-    //HAL_UART_Transmit(&huart2, (uint8_t *)ptr++, 1, 500);
+    __io_putchar(*ptr++);
+//    HAL_UART_Transmit(&huart2, (uint8_t *)ptr++, 1, 500);
   }
 
 //  osSemaphoreRelease(coreBinarySemHandle);
@@ -92,9 +92,16 @@ int _write(int file, char *ptr, int len) {
   return len;
 }
 
-//int __io_putchar(int ch) {
-//  return HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 500) == HAL_OK ? 0 : -1;
-//}
+int __io_putchar(int ch) {
+  return HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 500) == HAL_OK ? 0 : -1;
+}
+
+int __io_getchar(void)
+{
+	int ch;
+	HAL_UART_Receive(&huart2, (uint8_t *)&ch, 1, 500);
+	return ch;
+}
 /* USER CODE END 0 */
 
 /**
@@ -120,9 +127,9 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-//  HAL_DBGMCU_EnableDBGSleepMode();
-//  HAL_DBGMCU_EnableDBGStandbyMode();
-//  HAL_DBGMCU_EnableDBGStopMode();
+  HAL_DBGMCU_EnableDBGSleepMode();
+  HAL_DBGMCU_EnableDBGStandbyMode();
+  HAL_DBGMCU_EnableDBGStopMode();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -130,7 +137,7 @@ int main(void)
   MX_DMA_Init();
   MX_USART3_UART_Init();
   MX_USART2_UART_Init();
-  //MX_USART6_UART_Init();
+  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */

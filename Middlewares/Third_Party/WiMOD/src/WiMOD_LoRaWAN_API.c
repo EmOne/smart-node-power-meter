@@ -207,11 +207,13 @@ int function_wrapper(int (*f)(void))
   {
     while (!(TxMessage.SapID == RxMessage.SapID))
     {
-      if(--timeout) continue;
-      return 0;
+    	WiMOD_HCI_Process();
+	  if(--timeout) continue;
+	  return 0;
     }
     while (!(RxMessage.MsgID == TxMessage.MsgID + 1))
     {
+    	WiMOD_HCI_Process();
       if(--timeout) continue;
       return 0;
     }
@@ -235,7 +237,7 @@ WiMOD_LoRaWAN_Init(
 #endif
 		)
 {
-	comPort = &huart2;
+	comPort = &huart6;
     // init HCI layer
     return WiMOD_HCI_Init(comPort,                  // comPort
                    WiMOD_LoRaWAN_Process_RxMessage, // receiver callback
@@ -1916,15 +1918,15 @@ int SetRadioStack(void) {
 
 	UINT8 data[7];
 
-	data[0] = 0x4;	//Default Data Rate Index
+	data[0] = 0x5;	//Default Data Rate Index
 	data[1] = 0x10;	//Default TX Power Level (EIRP)
-	data[2] = 0b11000101;
+	data[2] = 0b11000111;
 //	    Bit 0: 0 = Adaptive Data Rate disabled	    1 = Adaptive Data Rate enabled
 //	    Bit 1: 0 = Duty Cycle Control disabled 1 = Duty Cycle Control enabled (Customer Mode required)
 //	    Bit 2: 0 = Class A selected 1 = Class C selected
 //	    Bit 6: 0 = standard RF packet output format	    1 = extended RF packet output format: Tx/Rx channel info attached
 //	    Bit 7: 0 = Rx MAC Command Forwarding disabled 	    1 = Rx MAC Command Forwarding enabled
-	data[3] = 0x01;	//Power Saving Mode 0x00 : off	    0x01 : automatic
+	data[3] = 0x00;	//Power Saving Mode 0x00 : off	    0x01 : automatic
 	data[4] = 0x7;	//Number of Retransmissions
 	data[5] = 0x12;	//Band Index AS923TH
 	data[6] = 0xf;	// Header MAC Cmd Capacity
@@ -2107,7 +2109,7 @@ int SetAlarm(void) {
 //------------------------------------------------------------------------------
 int Ping(void) {
   printf("ping request\n\r");
-  return function_wrapper(&WiMOD_LoRaWAN_SendPing);
+  return function_wrapper(WiMOD_LoRaWAN_SendPing);
 }
 
 //------------------------------------------------------------------------------

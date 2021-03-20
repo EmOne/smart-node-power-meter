@@ -157,7 +157,7 @@ WiMOD_HCI_SendMessage(TWiMOD_HCI_Message* txMessage)
         // 4. send octet sequence over serial device
         if (SerialDevice_SendData(TxBuffer, txLength) > 0)
         {
-//        	WiMOD_HCI_Process();
+        	WiMOD_HCI_Process();
             
             // return ok
             return 1;

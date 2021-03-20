@@ -270,7 +270,7 @@ void StartModbusTask(void const * argument)
 			ev.sensor = IDLE;
 			break;
 		case IDLE:
-			while(bReadyToSend == false)
+//			while(bReadyToSend == false)
 				osDelay(1000);
 			ev.sensor = RUNNING;
 			break;
@@ -289,9 +289,9 @@ void StartModbusTask(void const * argument)
 					}
 					osDelay(500);
 				}
-				ev.commu = RUNNING;
-				while(ev.commu != IDLE);
-				osDelay(5000);
+//				ev.commu = RUNNING;
+//				while(ev.commu != IDLE);
+				osDelay(1000);
 			}
 			ev.sensor = IDLE;
 			break;
@@ -324,6 +324,7 @@ void StartLoRaTask(void const * argument)
 //  osTimerStart(telemetryTimerHandle, 15000);
 	/* Infinite loop */
 	for (;;) {
+		WiMOD_LoRaWAN_Process();
 		switch (ev.commu) {
 		case POST:
 			memset(buf, 0x0, sizeof(buf));
@@ -360,12 +361,16 @@ void StartLoRaTask(void const * argument)
 					ev.commu = FAILSAFE;
 			}
 			bReadyToSend = true;
+			ev.commu = RUNNING;
 			break;
 		case SETTING:
-			SetOPMODE(3);
-			osDelay(5000);
+
 			GetOPMODE();
 			osDelay(1000);
+
+			SetOPMODE(3);
+			osDelay(5000);
+
 			if (loraAppStatus.opMode != 0) {
 				SetLinkADR();
 				osDelay(1000);
@@ -374,16 +379,18 @@ void StartLoRaTask(void const * argument)
 				SetOPMODE(0);
 				osDelay(1000);
 			}
+
 			SetRadioStack();
 			osDelay(1000);
+
 			GetDeviceInfo();
 			osDelay(5000);
 
 			GetDevEUI();
 			osDelay(5000);
 
-			Deactivate();
-			osDelay(500);
+//			Deactivate();
+//			osDelay(500);
 
 			ActivateABP();
 			osDelay(5000);
@@ -403,14 +410,14 @@ void StartLoRaTask(void const * argument)
 //
 ////			BSP_LED_Toggle(LED6);
 			bReadyToSend = false;
-			for (i = 0; i < 6; ++i) {
+			for (i = 0; i < NUMBER_MASTER_LOOKUP_INPUTS; ++i) {
 				buf[0] = i;
 				for (j = 0; j < MasterLookupTableInputs[i].Size; ++j) {
 					memcpy(&buf[(j*2) + 1], &MasterLookupTableInputs[i].RegisterInput[j].ActValue, sizeof(int));
 				}
 				SendUData(iSlaveId + 1, (uint8_t *) &buf,
 						(sizeof(int16_t) * MasterLookupTableInputs[i].Size) + 1);
-				osDelay(30000);
+//				osDelay(5000);
 			}
 
 //			SendUData(MasterTx_Buf[0] + 1, (uint8_t *) &sData_t, sizeof(sData_t));

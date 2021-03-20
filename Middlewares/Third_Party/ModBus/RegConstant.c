@@ -97,12 +97,14 @@ RegStructure  RegisterOutputs       [NUMBER_OF_OUTPUT_REGISTERS]={
 #if MBFN_MASTER_REGISTERS_ENABLED > 0
 RegStructure  MasterRegisterInputs        [NUMBER_MASTER_INPUT_REGISTERS];
 LookupTable	  MasterLookupTableInputs     [NUMBER_MASTER_LOOKUP_INPUTS] = {
-		{.LookupAddress = 2999, .RegisterInput = {0}, .Size = 12 }, //Current:12
-		{.LookupAddress = 3011, .RegisterInput = {0}, .Size = 8 },	//Current Unbalanced
-		{.LookupAddress = 3019, .RegisterInput = {0}, .Size = 16 }, //Voltage
-		{.LookupAddress = 3053, .RegisterInput = {0}, .Size = 8 },	//Power
-		{.LookupAddress = 3077, .RegisterInput = {0}, .Size = 8 },  //Power factor
-		{.LookupAddress = 3760, .RegisterInput = {0}, .Size = 15 },	//Demand
+		{.LookupAddress = 0, .RegisterInput = {0}, .Size = 3 },
+
+		//		{.LookupAddress = 2999, .RegisterInput = {0}, .Size = 12 }, //Current:12
+//		{.LookupAddress = 3011, .RegisterInput = {0}, .Size = 8 },	//Current Unbalanced
+//		{.LookupAddress = 3019, .RegisterInput = {0}, .Size = 16 }, //Voltage
+//		{.LookupAddress = 3053, .RegisterInput = {0}, .Size = 8 },	//Power
+//		{.LookupAddress = 3077, .RegisterInput = {0}, .Size = 8 },  //Power factor
+//		{.LookupAddress = 3760, .RegisterInput = {0}, .Size = 15 },	//Demand
 //		{.LookupAddress = 3008, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3010, .RegisterInput = {0}, .Size = 2 },
 //		{.LookupAddress = 3012, .RegisterInput = {0}, .Size = 2 },

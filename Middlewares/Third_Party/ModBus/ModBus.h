@@ -14,8 +14,8 @@
 #define NUMBER_OF_OUTPUT_REGISTERS              36                             // Modbus RTU Slave Output Register Sayisi  :   Kullanilacak Register sayisi buradan girilmeli
 #define NUMBER_OF_INPUT_REGISTERS               0                               // Modbus RTU Slave Input Register Sayisi   :   Kullanilacak Input Register sayisi buradan girilmeli
 #define NUMBER_MASTER_INPUT_REGISTERS           16                               // Modbus RTU Master Input Register Sayisi  :   Kullanilacak Master Data Register sayisi buradan girilmeli
-#define NUMBER_MASTER_LOOKUP_INPUTS           	6                               // Modbus RTU Master Lookup Input Register  :   Define look up table fot specific registers
-#define NUMBER_MASTER_LOOKUP_SLAVE           	3
+#define NUMBER_MASTER_LOOKUP_INPUTS           	1                               // Modbus RTU Master Lookup Input Register  :   Define look up table fot specific registers
+#define NUMBER_MASTER_LOOKUP_SLAVE           	1
 
 #define RECEIVE_BUFFER_SIZE                     250                             // Modbus RTU Slave icin kullanilacak buffer boyutu
 #define TRANSMIT_BUFFER_SIZE                    RECEIVE_BUFFER_SIZE

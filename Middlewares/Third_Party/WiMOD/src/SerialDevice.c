@@ -138,21 +138,26 @@ SerialDevice_Open(
     //    if (hWiModUart->gState == HAL_UART_STATE_READY) {
 //		return true;
 //	}
-//	hWiModUart->Instance = USART6;
-//	hWiModUart->Init.Mode = UART_MODE_TX_RX;
-//	hWiModUart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
-//	hWiModUart->Init.OverSampling = UART_OVERSAMPLING_16;
+	hWiModUart->Instance = USART6;
+	hWiModUart->Init.Mode = UART_MODE_TX_RX;
+	hWiModUart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	hWiModUart->Init.OverSampling = UART_OVERSAMPLING_16;
 //	hWiModUart->RxCpltCallback = USART_ITCharManager;
-//	hWiModUart->Init.BaudRate = baudRate;
-//	hWiModUart->Init.WordLength = dataBits;
-//	hWiModUart->Init.StopBits = UART_STOPBITS_1;
-//	hWiModUart->Init.Parity = parity;
+	hWiModUart->Init.BaudRate = baudRate;
+	hWiModUart->Init.WordLength = dataBits;
+	hWiModUart->Init.StopBits = UART_STOPBITS_1;
+	hWiModUart->Init.Parity = parity;
 
-	if (HAL_UART_Receive_IT(hWiModUart, &UsartTextString, 1) == HAL_OK)
-	{
-//		HAL_UART_Receive_DMA(hWiModUart, &UsartTextString, 1);
-		return true;
-	}
+
+	if (HAL_UART_Init(hWiModUart)== HAL_OK)
+		{
+			return true;
+		}
+//	if (HAL_UART_Receive_IT(hWiModUart, &UsartTextString, 1) == HAL_OK)
+//	{
+////		HAL_UART_Receive_DMA(hWiModUart, &UsartTextString, 1);
+//		return true;
+//	}
 
 	SerialDevice_Close();
 	Error_Handler();
@@ -322,14 +327,14 @@ SerialDevice_ReadData(UINT8* rxBuffer, size_t rxBufferSize)
     }
 #else
     // Todo : add your own platform specific code here
-    *rxBuffer = UsartTextString;
-	rxBufferSize = 1;
-        HAL_UART_Receive_IT(hWiModUart, &UsartTextString, 1);
-	return rxBufferSize;
-//    if(HAL_UART_Receive(hWiModUart, rxBuffer, rxBufferSize, 100) != HAL_ERROR)
-//    {
-//    	return rxBufferSize;
-//    }
+//    *rxBuffer = UsartTextString;
+//	rxBufferSize = 1;
+//        HAL_UART_Receive_IT(hWiModUart, &UsartTextString, 1);
+//	return rxBufferSize;
+    if(HAL_UART_Receive(hWiModUart, rxBuffer, rxBufferSize, 100) != HAL_ERROR)
+    {
+    	return rxBufferSize;
+    }
 #endif
     // error
 //    return -1;
