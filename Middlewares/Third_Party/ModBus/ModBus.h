@@ -11,9 +11,9 @@
 
 #define NUMBER_OF_COILS                         0                               // Modbus RTU Slave Coil Sayisi             :   Kullanilacak Coil sayisi buradan girilmeli
 #define NUMBER_OF_INPUTS                        0                               // Modbus RTU Slave Input Sayisi            :   Kullanilacak Input sayisi buradan girilmeli
-#define NUMBER_OF_OUTPUT_REGISTERS              36                             // Modbus RTU Slave Output Register Sayisi  :   Kullanilacak Register sayisi buradan girilmeli
+#define NUMBER_OF_OUTPUT_REGISTERS              8                             // Modbus RTU Slave Output Register Sayisi  :   Kullanilacak Register sayisi buradan girilmeli
 #define NUMBER_OF_INPUT_REGISTERS               0                               // Modbus RTU Slave Input Register Sayisi   :   Kullanilacak Input Register sayisi buradan girilmeli
-#define NUMBER_MASTER_INPUT_REGISTERS           16                               // Modbus RTU Master Input Register Sayisi  :   Kullanilacak Master Data Register sayisi buradan girilmeli
+#define NUMBER_MASTER_INPUT_REGISTERS           4                               // Modbus RTU Master Input Register Sayisi  :   Kullanilacak Master Data Register sayisi buradan girilmeli
 #define NUMBER_MASTER_LOOKUP_INPUTS           	1                               // Modbus RTU Master Lookup Input Register  :   Define look up table fot specific registers
 #define NUMBER_MASTER_LOOKUP_SLAVE           	1
 
@@ -27,10 +27,10 @@ extern unsigned char SLAVE_ADDRESS;                                             
 
 #define MBFN_READ_COILS_ENABLED                 ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_READ_DISCRETE_INPUTS_ENABLED       ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
-#define MBFN_READ_HOLDING_REGISTERS_ENABLED     ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
+#define MBFN_READ_HOLDING_REGISTERS_ENABLED     ( 1 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_READ_INPUT_REGISTERS_ENABLED       ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_WRITE_SINGLE_COIL_ENABLED          ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
-#define MBFN_WRITE_SINGLE_REGISTER_ENABLED      ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
+#define MBFN_WRITE_SINGLE_REGISTER_ENABLED      ( 1 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_WRITE_MULTIPLE_COILS_ENABLED       ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_WRITE_MULTIPLE_REGISTERS_ENABLED   ( 0 )                           // Kullanilacaksa 1, kullanilmayacaksa 0
 #define MBFN_MASTER_REGISTERS_ENABLED           ( 1 )                           // Modbus RTU Master kullanilacaksa 1, kullanilmayacaksa 0

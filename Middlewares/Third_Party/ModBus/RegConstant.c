@@ -97,7 +97,7 @@ RegStructure  RegisterOutputs       [NUMBER_OF_OUTPUT_REGISTERS]={
 #if MBFN_MASTER_REGISTERS_ENABLED > 0
 RegStructure  MasterRegisterInputs        [NUMBER_MASTER_INPUT_REGISTERS];
 LookupTable	  MasterLookupTableInputs     [NUMBER_MASTER_LOOKUP_INPUTS] = {
-		{.LookupAddress = 0, .RegisterInput = {0}, .Size = 3 },
+		{.LookupAddress = 0, .RegisterInput = {0}, .Size = NUMBER_MASTER_INPUT_REGISTERS },
 
 		//		{.LookupAddress = 2999, .RegisterInput = {0}, .Size = 12 }, //Current:12
 //		{.LookupAddress = 3011, .RegisterInput = {0}, .Size = 8 },	//Current Unbalanced
